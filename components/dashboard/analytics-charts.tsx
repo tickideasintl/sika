@@ -73,7 +73,17 @@ interface AnalyticsData {
   comparisons: AnalyticsComparisons;
 }
 
-const CHART_COLORS = ["#2563eb", "#059669", "#e11d48", "#f59e0b", "#8b5cf6", "#06b6d4"];
+// Money types resolve through the semantic tokens so the series match the figures
+// they explain, and follow the palette into dark mode. The trailing two extend the
+// set when a breakdown needs more slices than there are money types.
+const CHART_COLORS = [
+  "var(--color-income)",
+  "var(--color-giving)",
+  "var(--color-expense)",
+  "var(--color-obligation)",
+  "#8b5cf6",
+  "#06b6d4",
+];
 
 const PERIOD_OPTIONS: { value: Period; label: string }[] = [
   { value: "weekly", label: "Last 7 days" },
@@ -93,7 +103,7 @@ function formatChangeLabel(value: number | null) {
 function getComparisonTone(value: number | null, positiveIsGood = true) {
   if (value === null || Math.abs(value) < 0.05) return "text-muted-foreground";
   const improved = positiveIsGood ? value > 0 : value < 0;
-  return improved ? "text-emerald-600" : "text-rose-600";
+  return improved ? "text-foreground" : "text-expense";
 }
 
 function ComparisonHint({
@@ -337,7 +347,7 @@ export function AnalyticsCharts() {
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground">Income</CardTitle>
           </CardHeader>
-          <CardContent className="text-xl font-semibold text-blue-600">
+          <CardContent className="text-xl font-semibold text-income">
             {formatCurrency(analytics.totalIncome)}
             <ComparisonHint value={analytics.comparisons.incomeChange} />
           </CardContent>
@@ -347,7 +357,7 @@ export function AnalyticsCharts() {
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground">Expenses</CardTitle>
           </CardHeader>
-          <CardContent className="text-xl font-semibold text-rose-600">
+          <CardContent className="text-xl font-semibold text-expense">
             {formatCurrency(analytics.totalExpenses)}
             <ComparisonHint value={analytics.comparisons.expensesChange} positiveIsGood={false} />
           </CardContent>
@@ -357,7 +367,7 @@ export function AnalyticsCharts() {
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground">Giving</CardTitle>
           </CardHeader>
-          <CardContent className="text-xl font-semibold text-emerald-600">
+          <CardContent className="text-xl font-semibold text-giving">
             {formatCurrency(analytics.totalGivings)}
             <ComparisonHint value={analytics.comparisons.givingsChange} />
           </CardContent>
@@ -367,7 +377,7 @@ export function AnalyticsCharts() {
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground">Net</CardTitle>
           </CardHeader>
-          <CardContent className={`text-xl font-semibold ${netBalance >= 0 ? "text-emerald-600" : "text-rose-600"}`}>
+          <CardContent className={`text-xl font-semibold ${netBalance >= 0 ? "text-foreground" : "text-expense"}`}>
             {netBalance >= 0 ? <Wallet className="mr-1 inline size-4" /> : <TrendingDown className="mr-1 inline size-4" />}
             {formatCurrency(Math.abs(netBalance))}
             <span className="ml-1 text-xs text-muted-foreground">{netBalance >= 0 ? "surplus" : "deficit"}</span>
@@ -379,7 +389,7 @@ export function AnalyticsCharts() {
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground">Safe to spend</CardTitle>
           </CardHeader>
-          <CardContent className={`text-xl font-semibold ${analytics.safeToSpend >= 0 ? "text-blue-600" : "text-rose-600"}`}>
+          <CardContent className={`text-xl font-semibold ${analytics.safeToSpend >= 0 ? "text-foreground" : "text-expense"}`}>
             <PiggyBank className="mr-1 inline size-4" />
             {formatCurrency(Math.abs(analytics.safeToSpend))}
             <span className="ml-1 text-xs text-muted-foreground">{analytics.safeToSpend >= 0 ? "available" : "overcommitted"}</span>
@@ -391,7 +401,7 @@ export function AnalyticsCharts() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Sparkles className="size-5 text-amber-500" />
+            <Sparkles className="size-5 text-primary" />
             Spending Prediction
           </CardTitle>
         </CardHeader>
@@ -399,13 +409,13 @@ export function AnalyticsCharts() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div className="rounded-xl border border-border/60 p-4">
               <p className="text-sm text-muted-foreground">Projected Monthly Income</p>
-              <p className="mt-2 text-lg font-semibold text-blue-600">
+              <p className="mt-2 text-lg font-semibold text-income">
                 {formatCurrency(analytics.spendingPrediction.projectedMonthlyIncome)}
               </p>
             </div>
             <div className="rounded-xl border border-border/60 p-4">
               <p className="text-sm text-muted-foreground">Projected Monthly Expenses</p>
-              <p className="mt-2 text-lg font-semibold text-rose-600">
+              <p className="mt-2 text-lg font-semibold text-expense">
                 {formatCurrency(analytics.spendingPrediction.projectedMonthlyExpenses)}
               </p>
             </div>
@@ -413,10 +423,10 @@ export function AnalyticsCharts() {
               <p className="text-sm text-muted-foreground">Trend Direction</p>
               <p className={`mt-2 flex items-center gap-2 text-lg font-semibold ${
                 analytics.spendingPrediction.trendDirection === "improving"
-                  ? "text-emerald-600"
+                  ? "text-foreground"
                   : analytics.spendingPrediction.trendDirection === "declining"
-                    ? "text-rose-600"
-                    : "text-amber-600"
+                    ? "text-expense"
+                    : "text-obligation"
               }`}>
                 {analytics.spendingPrediction.trendDirection === "improving" && <TrendingUp className="size-5" />}
                 {analytics.spendingPrediction.trendDirection === "declining" && <TrendingDown className="size-5" />}
@@ -429,10 +439,10 @@ export function AnalyticsCharts() {
               <p className="text-sm text-muted-foreground">Days of Runway</p>
               <p className={`mt-2 text-lg font-semibold ${
                 analytics.spendingPrediction.daysOfRunway === null
-                  ? "text-emerald-600"
+                  ? "text-foreground"
                   : analytics.spendingPrediction.daysOfRunway > 30
-                    ? "text-amber-600"
-                    : "text-rose-600"
+                    ? "text-obligation"
+                    : "text-expense"
               }`}>
                 {analytics.spendingPrediction.daysOfRunway === null
                   ? "∞"
@@ -451,7 +461,7 @@ export function AnalyticsCharts() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Wallet className="size-5 text-blue-500" />
+            <Wallet className="size-5 text-muted-foreground" />
             Safe to Spend Breakdown
           </CardTitle>
         </CardHeader>
@@ -459,7 +469,7 @@ export function AnalyticsCharts() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div className="rounded-xl border border-border/60 p-4">
               <p className="text-sm text-muted-foreground">Available</p>
-              <p className="mt-2 text-lg font-semibold text-blue-600">
+              <p className="mt-2 text-lg font-semibold text-income">
                 {formatCurrency(analytics.safeToSpendBreakdown.available)}
               </p>
             </div>
@@ -468,7 +478,7 @@ export function AnalyticsCharts() {
                 <Receipt className="size-3" />
                 Committed Expenses
               </p>
-              <p className="mt-2 text-lg font-semibold text-rose-600">
+              <p className="mt-2 text-lg font-semibold text-expense">
                 -{formatCurrency(analytics.safeToSpendBreakdown.committedExpenses)}
               </p>
             </div>
@@ -477,14 +487,14 @@ export function AnalyticsCharts() {
                 <Target className="size-3" />
                 Active Goals
               </p>
-              <p className="mt-2 text-lg font-semibold text-amber-600">
+              <p className="mt-2 text-lg font-semibold text-obligation">
                 -{formatCurrency(analytics.safeToSpendBreakdown.activeGoalsAllocation)}
               </p>
             </div>
             <div className="rounded-xl border border-border/60 p-4">
               <p className="text-sm text-muted-foreground">Remaining</p>
               <p className={`mt-2 text-lg font-semibold ${
-                analytics.safeToSpendBreakdown.remaining >= 0 ? "text-emerald-600" : "text-rose-600"
+                analytics.safeToSpendBreakdown.remaining >= 0 ? "text-foreground" : "text-expense"
               }`}>
                 {formatCurrency(analytics.safeToSpendBreakdown.remaining)}
               </p>
@@ -544,9 +554,9 @@ export function AnalyticsCharts() {
                 <YAxis tick={{ fontSize: 12 }} />
                 <Tooltip formatter={(value) => formatCurrency(Number(value ?? 0))} />
                 <Legend />
-                <Line dataKey="income" stroke="#2563eb" strokeWidth={2} name="Income" dot={false} />
-                <Line dataKey="expenses" stroke="#e11d48" strokeWidth={2} name="Expenses" dot={false} />
-                <Line dataKey="givings" stroke="#059669" strokeWidth={2} name="Giving" dot={false} />
+                <Line dataKey="income" stroke="var(--color-income)" strokeWidth={2} name="Income" dot={false} />
+                <Line dataKey="expenses" stroke="var(--color-expense)" strokeWidth={2} name="Expenses" dot={false} />
+                <Line dataKey="givings" stroke="var(--color-giving)" strokeWidth={2} name="Giving" dot={false} />
               </LineChart>
             </ResponsiveContainer>
           )}
@@ -598,7 +608,7 @@ export function AnalyticsCharts() {
                   <XAxis type="number" tick={{ fontSize: 12 }} />
                   <YAxis dataKey="name" type="category" width={100} tick={{ fontSize: 12 }} />
                   <Tooltip formatter={(value) => formatCurrency(Number(value ?? 0))} />
-                  <Bar dataKey="value" fill="#2563eb" radius={[0, 6, 6, 0]} />
+                  <Bar dataKey="value" fill="var(--color-expense)" radius={[0, 6, 6, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             )}

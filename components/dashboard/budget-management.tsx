@@ -348,11 +348,11 @@ export function BudgetManagement() {
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className={`rounded-xl p-2 ${budget.type === "expense" ? "bg-rose-50 dark:bg-rose-950/30" : budget.type === "income" ? "bg-blue-50 dark:bg-blue-950/30" : "bg-emerald-50 dark:bg-emerald-950/30"}`}>
+                      <div className={`rounded-xl p-2 ${budget.type === "expense" ? "bg-expense-surface" : budget.type === "income" ? "bg-income-surface" : "bg-giving-surface"}`}>
                         {budget.type === "expense" ? (
-                          <TrendingDown className="size-4 text-rose-600 dark:text-rose-400" />
+                          <TrendingDown className="size-4 text-expense" />
                         ) : (
-                          <TrendingUp className={`size-4 ${budget.type === "income" ? "text-blue-600 dark:text-blue-400" : "text-emerald-600 dark:text-emerald-400"}`} />
+                          <TrendingUp className={`size-4 ${budget.type === "income" ? "text-income" : "text-giving"}`} />
                         )}
                       </div>
                       <div>
@@ -417,7 +417,7 @@ export function BudgetManagement() {
                         : `${formatCurrency(Math.abs(budget.remaining))} over budget`}
                     </span>
                     {(status === "warning" || status === "exceeded") && (
-                      <span className={`inline-flex items-center gap-1 ${status === "exceeded" ? "text-rose-600" : "text-amber-600"}`}>
+                      <span className={`inline-flex items-center gap-1 ${status === "exceeded" ? "text-expense" : "text-obligation"}`}>
                         <AlertTriangle className="h-3 w-3" />
                         {status === "exceeded" ? "Over" : "Near limit"}
                       </span>

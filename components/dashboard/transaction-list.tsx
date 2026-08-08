@@ -139,21 +139,21 @@ export function TransactionList({ refreshKey = 0 }: TransactionListProps) {
   };
 
   const getIcon = (type: TransactionType) => {
-    if (type === "expense") return <ArrowDownRight className="size-4 text-rose-600 dark:text-rose-400" />;
-    if (type === "income") return <TrendingUp className="size-4 text-blue-600 dark:text-blue-400" />;
-    return <ArrowUpRight className="size-4 text-emerald-600 dark:text-emerald-400" />;
+    if (type === "expense") return <ArrowDownRight className="size-4 text-expense" />;
+    if (type === "income") return <TrendingUp className="size-4 text-income" />;
+    return <ArrowUpRight className="size-4 text-giving" />;
   };
 
   const getIconBg = (type: TransactionType) => {
-    if (type === "expense") return "bg-rose-50 dark:bg-rose-950/30";
-    if (type === "income") return "bg-blue-50 dark:bg-blue-950/30";
-    return "bg-emerald-50 dark:bg-emerald-950/30";
+    if (type === "expense") return "bg-expense-surface";
+    if (type === "income") return "bg-income-surface";
+    return "bg-giving-surface";
   };
 
   const getAmountColor = (type: TransactionType) => {
-    if (type === "expense") return "text-rose-600 dark:text-rose-400";
-    if (type === "income") return "text-blue-600 dark:text-blue-400";
-    return "text-emerald-600 dark:text-emerald-400";
+    if (type === "expense") return "text-expense";
+    if (type === "income") return "text-income";
+    return "text-giving";
   };
 
   const displayPage = page + 1;
@@ -271,7 +271,7 @@ export function TransactionList({ refreshKey = 0 }: TransactionListProps) {
                       type="button"
                       size="sm"
                       variant="outline"
-                      className="h-9 flex-1 border-rose-200 text-rose-600 hover:bg-rose-50 dark:border-rose-900 dark:hover:bg-rose-950/30 sm:flex-none"
+                      className="h-9 flex-1 border-rose-200 text-expense hover:bg-rose-50 dark:border-rose-900 dark:hover:bg-rose-950/30 sm:flex-none"
                       onClick={() => handleDelete(transaction.id)}
                     >
                       <Trash2 className="mr-2 size-3.5" />

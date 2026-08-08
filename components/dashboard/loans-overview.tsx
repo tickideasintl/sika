@@ -16,10 +16,10 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const STATUS_COLORS: Record<string, string> = {
-  active: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-  partially_repaid: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
-  fully_repaid: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
-  defaulted: "bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400",
+  active: "bg-income-surface text-income",
+  partially_repaid: "bg-obligation-surface text-obligation",
+  fully_repaid: "bg-muted text-foreground",
+  defaulted: "bg-expense-surface text-expense",
 };
 
 interface LoansResponse {
@@ -95,13 +95,13 @@ export function LoansOverview() {
             <div className="grid grid-cols-2 gap-2">
               <div className="rounded-xl bg-blue-50/50 dark:bg-blue-950/20 p-3">
                 <p className="text-xs text-muted-foreground">Total Lent</p>
-                <p className="font-semibold tabular-nums text-blue-600 dark:text-blue-400">
+                <p className="font-semibold tabular-nums text-income">
                   {formatCurrency(total_lent)}
                 </p>
               </div>
               <div className="rounded-xl bg-amber-50/50 dark:bg-amber-950/20 p-3">
                 <p className="text-xs text-muted-foreground">Outstanding</p>
-                <p className="font-semibold tabular-nums text-amber-600 dark:text-amber-400">
+                <p className="font-semibold tabular-nums text-obligation">
                   {formatCurrency(total_outstanding)}
                 </p>
               </div>
@@ -114,7 +114,7 @@ export function LoansOverview() {
                   className="flex items-center justify-between rounded-lg border border-border/50 px-3 py-2.5 text-sm"
                 >
                   <div className="flex items-center gap-2">
-                    <Clock className="size-3.5 text-blue-500" />
+                    <Clock className="size-3.5 text-obligation" />
                     <div>
                       <p className="font-medium">{item.borrower_name}</p>
                       <span
@@ -125,7 +125,7 @@ export function LoansOverview() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-medium tabular-nums text-amber-600 dark:text-amber-400">
+                    <p className="font-medium tabular-nums text-obligation">
                       {formatCurrency(item.outstanding_balance)}
                     </p>
                   </div>

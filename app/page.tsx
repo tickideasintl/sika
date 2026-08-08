@@ -94,15 +94,15 @@ export default async function Home() {
         <div className="mt-10 rounded-2xl border border-border/40 bg-muted/30 p-5 text-sm text-muted-foreground">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center sm:gap-8">
             <span className="inline-flex items-center gap-2">
-              <CheckCircle2 className="size-4 text-emerald-500" />
+              <CheckCircle2 className="size-4 text-emerald-600 dark:text-emerald-400" />
               Personal finance focused
             </span>
             <span className="inline-flex items-center gap-2">
-              <CheckCircle2 className="size-4 text-emerald-500" />
+              <CheckCircle2 className="size-4 text-emerald-600 dark:text-emerald-400" />
               Built for daily use
             </span>
             <span className="inline-flex items-center gap-2">
-              <CheckCircle2 className="size-4 text-emerald-500" />
+              <CheckCircle2 className="size-4 text-emerald-600 dark:text-emerald-400" />
               Income · Expense · Giving
             </span>
           </div>

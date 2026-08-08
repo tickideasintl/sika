@@ -96,7 +96,7 @@ export function InvestmentsOverview() {
             <div className="grid grid-cols-2 gap-2">
               <div className="rounded-xl bg-blue-50/50 dark:bg-blue-950/20 p-3">
                 <p className="text-xs text-muted-foreground">Invested</p>
-                <p className="font-semibold tabular-nums text-blue-600 dark:text-blue-400">
+                <p className="font-semibold tabular-nums text-income">
                   {formatCurrency(total_cost_basis)}
                 </p>
               </div>
@@ -111,8 +111,8 @@ export function InvestmentsOverview() {
                 <p
                   className={`font-semibold tabular-nums ${
                     isGain
-                      ? "text-emerald-600 dark:text-emerald-400"
-                      : "text-rose-600 dark:text-rose-400"
+                      ? "text-foreground"
+                      : "text-expense"
                   }`}
                 >
                   {formatCurrency(total_current_value)}
@@ -123,8 +123,8 @@ export function InvestmentsOverview() {
             <p
               className={`text-center text-xs font-medium ${
                 isGain
-                  ? "text-emerald-600 dark:text-emerald-400"
-                  : "text-rose-600 dark:text-rose-400"
+                  ? "text-foreground"
+                  : "text-expense"
               }`}
             >
               Total Return: {isGain ? "+" : ""}
@@ -142,7 +142,7 @@ export function InvestmentsOverview() {
                   >
                     <div className="flex items-center gap-2">
                       <TrendingUp
-                        className={`size-3.5 ${itemGain ? "text-emerald-500" : "text-rose-500"}`}
+                        className={`size-3.5 ${itemGain ? "text-foreground" : "text-expense"}`}
                       />
                       <div>
                         <p className="font-medium">{item.name}</p>
@@ -158,8 +158,8 @@ export function InvestmentsOverview() {
                       <p
                         className={`text-[10px] font-medium ${
                           itemGain
-                            ? "text-emerald-600 dark:text-emerald-400"
-                            : "text-rose-600 dark:text-rose-400"
+                            ? "text-foreground"
+                            : "text-expense"
                         }`}
                       >
                         {itemGain ? "+" : ""}

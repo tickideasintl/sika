@@ -19,66 +19,6 @@
           "#dbeafe"
         ]
       },
-      "inflow-blue": {
-        "role": "secondary",
-        "displayName": "Inflow Blue",
-        "canonical": "#2563eb",
-        "tonalRamp": [
-          "#172554",
-          "#1e40af",
-          "#1d4ed8",
-          "#2563eb",
-          "#3b82f6",
-          "#60a5fa",
-          "#93c5fd",
-          "#dbeafe"
-        ]
-      },
-      "outflow-rose": {
-        "role": "secondary",
-        "displayName": "Outflow Rose",
-        "canonical": "#e11d48",
-        "tonalRamp": [
-          "#4c0519",
-          "#9f1239",
-          "#be123c",
-          "#e11d48",
-          "#f43f5e",
-          "#fb7185",
-          "#fda4af",
-          "#ffe4e6"
-        ]
-      },
-      "giving-green": {
-        "role": "secondary",
-        "displayName": "Giving Green",
-        "canonical": "#059669",
-        "tonalRamp": [
-          "#022c22",
-          "#065f46",
-          "#047857",
-          "#059669",
-          "#10b981",
-          "#34d399",
-          "#6ee7b7",
-          "#d1fae5"
-        ]
-      },
-      "obligation-amber": {
-        "role": "secondary",
-        "displayName": "Obligation Amber",
-        "canonical": "#d97706",
-        "tonalRamp": [
-          "#451a03",
-          "#92400e",
-          "#b45309",
-          "#d97706",
-          "#f59e0b",
-          "#fbbf24",
-          "#fcd34d",
-          "#fef3c7"
-        ]
-      },
       "background": {
         "role": "neutral",
         "displayName": "Paper",
@@ -118,6 +58,70 @@
         "role": "neutral",
         "displayName": "Alarm Red",
         "canonical": "hsl(0 84% 60%)"
+      },
+      "income": {
+        "role": "secondary",
+        "displayName": "Inflow Blue",
+        "canonical": "#1447e6",
+        "darkValue": "#51a2ff",
+        "tonalRamp": [
+          "#162456",
+          "#1c398e",
+          "#193cb8",
+          "#1447e6",
+          "#155dfc",
+          "#51a2ff",
+          "#8ec5ff",
+          "#dbeafe"
+        ]
+      },
+      "expense": {
+        "role": "secondary",
+        "displayName": "Outflow Rose",
+        "canonical": "#c20039",
+        "darkValue": "#ff667f",
+        "tonalRamp": [
+          "#4d0218",
+          "#8b0836",
+          "#9f0712",
+          "#c20039",
+          "#ec003f",
+          "#ff667f",
+          "#ffa1ad",
+          "#ffe4e6"
+        ]
+      },
+      "giving": {
+        "role": "secondary",
+        "displayName": "Giving Green",
+        "canonical": "#007956",
+        "darkValue": "#00d294",
+        "tonalRamp": [
+          "#002c22",
+          "#004f3b",
+          "#006045",
+          "#007956",
+          "#009966",
+          "#00d294",
+          "#5ee9b5",
+          "#d0fae5"
+        ]
+      },
+      "obligation": {
+        "role": "secondary",
+        "displayName": "Obligation Amber",
+        "canonical": "#b75000",
+        "darkValue": "#ffb900",
+        "tonalRamp": [
+          "#461901",
+          "#7b3306",
+          "#973c00",
+          "#b75000",
+          "#e17100",
+          "#ffb900",
+          "#ffd230",
+          "#fef3c6"
+        ]
       }
     },
     "typographyMeta": {
@@ -287,7 +291,7 @@
       "refersTo": "type-tile-giving",
       "description": "The signature element and the semantic backbone: tinted 12px square, directional glyph, one per money type. Colour is always paired with a distinct glyph.",
       "html": "<div class=\"ds-types\"><div class=\"ds-type ds-type--income\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"22 7 13.5 15.5 8.5 10.5 2 17\"/><polyline points=\"16 7 22 7 22 13\"/></svg></div><div class=\"ds-type ds-type--expense\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m7 7 10 10\"/><path d=\"M17 7v10H7\"/></svg></div><div class=\"ds-type ds-type--giving\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 7h10v10\"/><path d=\"M7 17 17 7\"/></svg></div></div>",
-      "css": ".ds-types { display: flex; gap: 0.75rem; } .ds-type { display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; border-radius: 0.75rem; } .ds-type svg { width: 1rem; height: 1rem; } .ds-type--income { background: #eff6ff; color: #2563eb; } .ds-type--expense { background: #fff1f2; color: #e11d48; } .ds-type--giving { background: #ecfdf5; color: #059669; }"
+      "css": ".ds-types { display: flex; gap: 0.75rem; } .ds-type { display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; border-radius: 0.75rem; } .ds-type svg { width: 1rem; height: 1rem; } .ds-type--income { background: var(--color-income-surface); color: var(--color-income); } .ds-type--expense { background: var(--color-expense-surface); color: var(--color-expense); } .ds-type--giving { background: var(--color-giving-surface); color: var(--color-giving); }"
     },
     {
       "name": "Stat Card",
@@ -295,7 +299,7 @@
       "refersTo": "card-surface",
       "description": "The dashboard's opening row. Graphite label, semantic icon, tabular figure in the colour of what it measures.",
       "html": "<div class=\"ds-stat\"><div class=\"ds-stat-top\"><span class=\"ds-stat-label\">Giving</span><svg class=\"ds-stat-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 7h10v10\"/><path d=\"M7 17 17 7\"/></svg></div><div class=\"ds-stat-value\">£1,240.00</div><p class=\"ds-stat-meta\">This month</p></div>",
-      "css": ".ds-stat { border: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent); border-radius: 1rem; background: var(--color-card); box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.02); padding: 1rem; min-width: 11rem; } .ds-stat-top { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; } .ds-stat-label { font-size: 0.75rem; font-weight: 500; color: var(--color-muted-foreground); } .ds-stat-icon { width: 1rem; height: 1rem; color: #059669; } .ds-stat-value { margin-top: 0.5rem; font-size: 1.5rem; font-weight: 600; line-height: 1.2; font-variant-numeric: tabular-nums; color: #059669; } .ds-stat-meta { margin: 0.25rem 0 0; font-size: 0.75rem; color: var(--color-muted-foreground); }"
+      "css": ".ds-stat { border: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent); border-radius: 1rem; background: var(--color-card); box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.02); padding: 1rem; min-width: 11rem; } .ds-stat-top { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; } .ds-stat-label { font-size: 0.75rem; font-weight: 500; color: var(--color-muted-foreground); } .ds-stat-icon { width: 1rem; height: 1rem; color: var(--color-giving); } .ds-stat-value { margin-top: 0.5rem; font-size: 1.5rem; font-weight: 600; line-height: 1.2; font-variant-numeric: tabular-nums; color: var(--color-giving); } .ds-stat-meta { margin: 0.25rem 0 0; font-size: 0.75rem; color: var(--color-muted-foreground); }"
     },
     {
       "name": "Budget Progress Bar",
@@ -303,7 +307,7 @@
       "refersTo": "card-surface",
       "description": "Pill track in Wash with a 500ms fill, the system's only expressive duration. The percentage label is required, not decorative.",
       "html": "<div class=\"ds-progress-row\"><div class=\"ds-progress-head\"><span class=\"ds-progress-name\">Food &amp; Dining</span><span class=\"ds-progress-figures\">£320.00 / £500.00</span></div><div class=\"ds-progress-track\"><div class=\"ds-progress-fill\" style=\"width: 64%\"></div></div><div class=\"ds-progress-foot\">64% used · £180.00 left</div></div>",
-      "css": ".ds-progress-row { display: flex; flex-direction: column; gap: 0.5rem; max-width: 22rem; } .ds-progress-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; } .ds-progress-name { font-size: 0.875rem; font-weight: 500; color: var(--color-foreground); } .ds-progress-figures { font-size: 0.875rem; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--color-foreground); } .ds-progress-track { height: 0.5rem; border-radius: 9999px; background: var(--color-muted); overflow: hidden; } .ds-progress-fill { height: 100%; border-radius: 9999px; background: #059669; transition: width 500ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-progress-foot { font-size: 0.75rem; font-variant-numeric: tabular-nums; color: var(--color-muted-foreground); }"
+      "css": ".ds-progress-row { display: flex; flex-direction: column; gap: 0.5rem; max-width: 22rem; } .ds-progress-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; } .ds-progress-name { font-size: 0.875rem; font-weight: 500; color: var(--color-foreground); } .ds-progress-figures { font-size: 0.875rem; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--color-foreground); } .ds-progress-track { height: 0.5rem; border-radius: 9999px; background: var(--color-muted); overflow: hidden; } .ds-progress-fill { height: 100%; border-radius: 9999px; background: var(--color-giving); transition: width 500ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-progress-foot { font-size: 0.75rem; font-variant-numeric: tabular-nums; color: var(--color-muted-foreground); }"
     }
   ],
   "narrative": {
@@ -368,6 +372,11 @@
         "name": "The Radius-Scales-With-Surface Rule",
         "body": "8px for things you click, 12px for things that hold an icon, 16px for things that hold content. A 16px-radius button or an 8px-radius card is out of system.",
         "section": "shapes"
+      },
+      {
+        "name": "The Token-Or-Nothing Rule",
+        "body": "A money type is coloured with its token — text-income, bg-expense-surface — and never with a raw palette class. text-emerald-600 in a component is a bug even when it looks right: it has no dark-mode value, it is not contrast-checked, and it detaches the colour from the meaning. Raw palette steps remain fine for things that are not money.",
+        "section": "colors"
       }
     ],
     "dos": [
@@ -376,7 +385,9 @@
       "Do use tabular-nums on every currency figure, percentage, and total.",
       "Do size transaction-entry controls at 2.75rem, per the Thumb Row Rule.",
       "Do separate surfaces with a translucent hairline (border-border/50) before considering a shadow.",
-      "Do keep the semantic four bound to their meanings in charts and exports, not just in the UI: income blue, expenses rose, giving green — as analytics-charts.tsx already does."
+      "Do keep the semantic four bound to their meanings in charts and exports, not just in the UI: income blue, expenses rose, giving green — as analytics-charts.tsx already does.",
+      "Do colour money with its token (text-giving, bg-expense-surface). The token is contrast-checked and theme-aware; a palette step is neither.",
+      "Do keep @custom-variant dark (&:where(.dark, .dark *)) at the top of globals.css. Tailwind v4 otherwise compiles every dark: utility into @media (prefers-color-scheme: dark), which silently ignores the in-app theme toggle."
     ],
     "donts": [
       "Don't reintroduce a tailwind.config.js/ts. This project is CSS-first Tailwind v4: there is no @config directive, so a JS config would never load. The previous one was deleted for exactly this reason — it had been silently inert, and its hsl(var(--border)) values pointed at variables that never existed.",
@@ -388,7 +399,8 @@
       "Don't add shadow tiers between flat and floating, and don't promote a card on hover. Hover changes fill or border, never elevation.",
       "Don't reach for gradients, glassmorphism, neon accents, confetti, streak counters, mascots, or emoji as interface elements. The rejected references are the crypto terminal and the gamified budgeting app.",
       "Don't exceed two dashboard panels across.",
-      "Don't rebuild interactive primitives by hand. Radix supplies the semantics; restyle the existing wrapper in components/ui/ instead."
+      "Don't rebuild interactive primitives by hand. Radix supplies the semantics; restyle the existing wrapper in components/ui/ instead.",
+      "Don't write text-rose-600 dark:text-rose-400 for a money type. That pair is what the tokens replaced; half of its occurrences had lost their dark half."
     ]
   }
 }

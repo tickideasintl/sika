@@ -12,10 +12,18 @@ colors:
   border: "hsl(240 6% 90%)"
   ring: "hsl(221 83% 53%)"
   destructive: "hsl(0 84% 60%)"
-  inflow-blue: "#2563eb"
-  outflow-rose: "#e11d48"
-  giving-green: "#059669"
-  obligation-amber: "#d97706"
+  income: "#1447e6"
+  income-surface: "#eff6ff"
+  expense: "#c20039"
+  expense-surface: "#fff1f2"
+  giving: "#007956"
+  giving-surface: "#ecfdf5"
+  obligation: "#b75000"
+  obligation-surface: "#fffbeb"
+  dark-income: "#51a2ff"
+  dark-expense: "#ff667f"
+  dark-giving: "#00d294"
+  dark-obligation: "#ffb900"
   dark-background: "hsl(240 10% 4%)"
   dark-card: "hsl(240 10% 7%)"
   dark-foreground: "hsl(0 0% 98%)"
@@ -125,18 +133,18 @@ components:
     rounded: "{rounded.control}"
     padding: "0.5rem 0.75rem"
   type-tile-income:
-    backgroundColor: "#eff6ff"
-    textColor: "{colors.inflow-blue}"
+    backgroundColor: "{colors.income-surface}"
+    textColor: "{colors.income}"
     rounded: "{rounded.tile}"
     size: "2.5rem"
   type-tile-expense:
-    backgroundColor: "#fff1f2"
-    textColor: "{colors.outflow-rose}"
+    backgroundColor: "{colors.expense-surface}"
+    textColor: "{colors.expense}"
     rounded: "{rounded.tile}"
     size: "2.5rem"
   type-tile-giving:
-    backgroundColor: "#ecfdf5"
-    textColor: "{colors.giving-green}"
+    backgroundColor: "{colors.giving-surface}"
+    textColor: "{colors.giving}"
     rounded: "{rounded.tile}"
     size: "2.5rem"
 ---
@@ -192,17 +200,24 @@ piece of text, and a small saturated set that exists only to classify money.
 The semantic finance set. These are the only saturated colors in the product, and each
 one is bound to a single financial meaning across every screen, chart, and export.
 
-- **Inflow Blue** (`{colors.inflow-blue}`): income. Money arriving.
-- **Outflow Rose** (`{colors.outflow-rose}`): expenses. Money leaving. Also carries
-  negative net worth and destructive-adjacent financial actions.
-- **Giving Green** (`{colors.giving-green}`): giving — tithes, partnership, offerings.
-  A peer of the two above, never a shade of expense.
-- **Obligation Amber** (`{colors.obligation-amber}`): liabilities, debts, and bills
-  falling due. Caution, not alarm.
+- **Inflow Blue** (`{colors.income}`): income. Money arriving.
+- **Outflow Rose** (`{colors.expense}`): expenses. Money leaving. Also carries negative
+  net worth and destructive-adjacent financial actions.
+- **Giving Green** (`{colors.giving}`): giving — tithes, partnership, offerings. A peer
+  of the two above, never a shade of expense.
+- **Obligation Amber** (`{colors.obligation}`): liabilities, debts, and bills falling
+  due. Caution, not alarm.
 
-Each appears in three registers: a 50-level tint as the tile or row background, the
-600-level as the figure and icon in light mode, and the 400-level in dark mode against a
-950-level tint at 30% opacity.
+Each is a **token, not a palette step**: `text-income`, `bg-giving-surface`,
+`text-obligation-foreground`. The token carries its own dark-mode value, so a money type
+cannot be coloured correctly in one theme and wrongly in the other. Each has three parts —
+the ink itself, a `-surface` tint for the tile or row it sits on, and a `-foreground` for
+the rare case where the money type is the fill rather than the ink.
+
+The light values are the 700 step, not the 600 step the system originally used. 600 fails
+WCAG AA on white for giving (3.65:1) and obligations (3.20:1), and only scrapes it for
+expenses (4.48:1). Every token above clears 4.5:1 on the page, on card white, and on its
+own surface tint, in both themes.
 
 ### Tertiary
 
@@ -235,13 +250,19 @@ be Ink, Graphite, or Hairline. Decoration does not earn color in this system.
 
 **The Chrome-and-Amount Rule.** Signal Blue is for things you click. Inflow Blue is for
 money that arrived. Never apply Signal Blue to a figure, and never apply Inflow Blue to
-a button, link, or focus ring — they are close enough in hue that the only thing keeping
-them legible is the discipline of never mixing their jobs.
+a button, link, or focus ring.
 
-> **Known tension (recorded, not resolved).** Signal Blue `hsl(221 83% 53%)` and Inflow
-> Blue `#2563eb` are effectively the same color. Today the Chrome-and-Amount Rule keeps
-> them apart by context alone. If income figures and primary buttons ever land in the
-> same visual group, the correct fix is to move one of them off blue — not to add a rule.
+**The Token-Or-Nothing Rule.** A money type is coloured with its token — `text-income`,
+`bg-expense-surface` — and never with a raw palette class. `text-emerald-600` in a
+component is a bug even when it looks right: it has no dark-mode value, it is not
+contrast-checked, and it detaches the colour from the meaning. Raw palette steps remain
+fine for things that are not money: a status tick, a decorative accent.
+
+> **Tension, reduced but not resolved.** Signal Blue `hsl(221 83% 53%)` (≈ `#2463eb`) and
+> Inflow Blue were the same colour. Moving income to the 700 step for contrast also moved
+> it to `#1447e6`, which is now visibly darker than the primary, so the two no longer
+> collide at a glance. They remain the same hue family, and a full resolution still means
+> moving one of them off blue.
 
 **The Giving-Is-Not-Green-Money Rule.** Giving Green marks giving specifically, not
 "positive" generally. Income is blue. Do not let a chart, a badge, or a summary card
@@ -491,6 +512,12 @@ alone; the percentage label beside it is required, not decorative, and the track
 
 - **Do** put new tokens in the `@theme` block of `app/globals.css`, and add the matching
   `.dark` override in the same commit. That block is the only live source of truth.
+- **Do** colour money with its token (`text-giving`, `bg-expense-surface`), per the
+  Token-Or-Nothing Rule. The token is contrast-checked and theme-aware; a palette step is
+  neither.
+- **Do** keep `@custom-variant dark (&:where(.dark, .dark *))` at the top of
+  `globals.css`. Tailwind v4 otherwise compiles every `dark:` utility into
+  `@media (prefers-color-scheme: dark)`, which silently ignores the in-app theme toggle.
 - **Do** pair every semantic color with a glyph, a label, or a sign. Financial state is
   never conveyed by hue alone (WCAG 1.4.1). Every budget bar, status badge, and net-worth
   figure states its condition in words as well as colour.
@@ -511,6 +538,8 @@ alone; the percentage label beside it is required, not decorative, and the track
   Shapes scale above.
 - **Don't** apply Signal Blue to a number or Inflow Blue to a control. See the
   Chrome-and-Amount Rule and the tension recorded beneath it.
+- **Don't** write `text-rose-600 dark:text-rose-400` for a money type. That pair is what
+  the tokens replaced; half of its occurrences had lost their dark half.
 - **Don't** use Giving Green as a generic "positive" or "up" color.
 - **Don't** introduce a second typeface, a third text weight beyond 400/500/600, or a
   monospace face for figures — tabular numerals already solve alignment.

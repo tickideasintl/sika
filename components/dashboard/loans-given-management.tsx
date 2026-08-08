@@ -34,23 +34,23 @@ import { LoanFormFields, type LoanFormData } from "./loans/loan-form-fields";
 const STATUS_CONFIG: Record<LoanStatus, { label: string; color: string; bg: string }> = {
   active: {
     label: "Active",
-    color: "text-blue-600 dark:text-blue-400",
-    bg: "bg-blue-50 dark:bg-blue-950/30",
+    color: "text-income",
+    bg: "bg-income-surface",
   },
   partially_repaid: {
     label: "Partially Repaid",
-    color: "text-amber-600 dark:text-amber-400",
-    bg: "bg-amber-50 dark:bg-amber-950/30",
+    color: "text-obligation",
+    bg: "bg-obligation-surface",
   },
   fully_repaid: {
     label: "Fully Repaid",
-    color: "text-emerald-600 dark:text-emerald-400",
-    bg: "bg-emerald-50 dark:bg-emerald-950/30",
+    color: "text-foreground",
+    bg: "bg-muted",
   },
   defaulted: {
     label: "Defaulted",
-    color: "text-rose-600 dark:text-rose-400",
-    bg: "bg-rose-50 dark:bg-rose-950/30",
+    color: "text-expense",
+    bg: "bg-expense-surface",
   },
 };
 
@@ -240,12 +240,12 @@ export function LoansGivenManagement() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Total Lent</p>
-                <p className="text-2xl font-semibold text-blue-600 dark:text-blue-400 tabular-nums">
+                <p className="text-2xl font-semibold text-income tabular-nums">
                   {formatCurrency(data?.total_lent ?? 0)}
                 </p>
               </div>
-              <div className="rounded-xl bg-blue-50 dark:bg-blue-950/30 p-3">
-                <HandCoins className="size-6 text-blue-600 dark:text-blue-400" />
+              <div className="rounded-xl bg-income-surface p-3">
+                <HandCoins className="size-6 text-income" />
               </div>
             </div>
           </CardContent>
@@ -255,12 +255,12 @@ export function LoansGivenManagement() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Total Outstanding</p>
-                <p className="text-2xl font-semibold text-amber-600 dark:text-amber-400 tabular-nums">
+                <p className="text-2xl font-semibold text-obligation tabular-nums">
                   {formatCurrency(data?.total_outstanding ?? 0)}
                 </p>
               </div>
-              <div className="rounded-xl bg-amber-50 dark:bg-amber-950/30 p-3">
-                <Clock className="size-6 text-amber-600 dark:text-amber-400" />
+              <div className="rounded-xl bg-obligation-surface p-3">
+                <Clock className="size-6 text-obligation" />
               </div>
             </div>
           </CardContent>
@@ -274,8 +274,8 @@ export function LoansGivenManagement() {
                   {data?.active_count ?? 0}
                 </p>
               </div>
-              <div className="rounded-xl bg-emerald-50 dark:bg-emerald-950/30 p-3">
-                <Users className="size-6 text-emerald-600 dark:text-emerald-400" />
+              <div className="rounded-xl bg-muted p-3">
+                <Users className="size-6 text-muted-foreground" />
               </div>
             </div>
           </CardContent>
@@ -401,14 +401,14 @@ export function LoansGivenManagement() {
                 <CardContent className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Amount Lent</span>
-                    <span className="font-semibold tabular-nums text-blue-600 dark:text-blue-400">
+                    <span className="font-semibold tabular-nums text-income">
                       {formatCurrency(item.amount)}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Outstanding</span>
-                    <span className="font-semibold tabular-nums text-amber-600 dark:text-amber-400">
+                    <span className="font-semibold tabular-nums text-obligation">
                       {formatCurrency(item.outstanding_balance)}
                     </span>
                   </div>
@@ -448,7 +448,7 @@ export function LoansGivenManagement() {
                       </span>
                       <span
                         className={`font-medium flex items-center gap-1 ${
-                          overdue ? "text-rose-600 dark:text-rose-400" : ""
+                          overdue ? "text-expense" : ""
                         }`}
                       >
                         {overdue && <AlertTriangle className="size-3" />}

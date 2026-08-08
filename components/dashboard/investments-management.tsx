@@ -219,12 +219,12 @@ export function InvestmentsManagement() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Total Invested</p>
-                <p className="text-2xl font-semibold text-blue-600 dark:text-blue-400 tabular-nums">
+                <p className="text-2xl font-semibold text-income tabular-nums">
                   {formatCurrency(totalCostBasis)}
                 </p>
               </div>
-              <div className="rounded-xl bg-blue-50 dark:bg-blue-950/30 p-3">
-                <Landmark className="size-6 text-blue-600 dark:text-blue-400" />
+              <div className="rounded-xl bg-income-surface p-3">
+                <Landmark className="size-6 text-income" />
               </div>
             </div>
           </CardContent>
@@ -237,8 +237,8 @@ export function InvestmentsManagement() {
                 <p
                   className={`text-2xl font-semibold tabular-nums ${
                     isPositiveReturn
-                      ? "text-emerald-600 dark:text-emerald-400"
-                      : "text-rose-600 dark:text-rose-400"
+                      ? "text-foreground"
+                      : "text-expense"
                   }`}
                 >
                   {formatCurrency(totalCurrentValue)}
@@ -247,20 +247,20 @@ export function InvestmentsManagement() {
               <div
                 className={`rounded-xl p-3 ${
                   isPositiveReturn
-                    ? "bg-emerald-50 dark:bg-emerald-950/30"
-                    : "bg-rose-50 dark:bg-rose-950/30"
+                    ? "bg-muted"
+                    : "bg-expense-surface"
                 }`}
               >
                 {isPositiveReturn ? (
                   <TrendingUp
                     className={`size-6 ${
                       isPositiveReturn
-                        ? "text-emerald-600 dark:text-emerald-400"
-                        : "text-rose-600 dark:text-rose-400"
+                        ? "text-foreground"
+                        : "text-expense"
                     }`}
                   />
                 ) : (
-                  <TrendingDown className="size-6 text-rose-600 dark:text-rose-400" />
+                  <TrendingDown className="size-6 text-expense" />
                 )}
               </div>
             </div>
@@ -274,8 +274,8 @@ export function InvestmentsManagement() {
                 <p
                   className={`text-2xl font-semibold tabular-nums ${
                     isPositiveReturn
-                      ? "text-emerald-600 dark:text-emerald-400"
-                      : "text-rose-600 dark:text-rose-400"
+                      ? "text-foreground"
+                      : "text-expense"
                   }`}
                 >
                   {totalGainLoss >= 0 ? "+" : ""}
@@ -284,8 +284,8 @@ export function InvestmentsManagement() {
                 <p
                   className={`text-xs font-medium tabular-nums ${
                     isPositiveReturn
-                      ? "text-emerald-600 dark:text-emerald-400"
-                      : "text-rose-600 dark:text-rose-400"
+                      ? "text-foreground"
+                      : "text-expense"
                   }`}
                 >
                   {totalReturnPct >= 0 ? "+" : ""}
@@ -295,14 +295,14 @@ export function InvestmentsManagement() {
               <div
                 className={`rounded-xl p-3 ${
                   isPositiveReturn
-                    ? "bg-emerald-50 dark:bg-emerald-950/30"
-                    : "bg-rose-50 dark:bg-rose-950/30"
+                    ? "bg-muted"
+                    : "bg-expense-surface"
                 }`}
               >
                 {isPositiveReturn ? (
-                  <TrendingUp className="size-6 text-emerald-600 dark:text-emerald-400" />
+                  <TrendingUp className="size-6 text-foreground" />
                 ) : (
-                  <TrendingDown className="size-6 text-rose-600 dark:text-rose-400" />
+                  <TrendingDown className="size-6 text-expense" />
                 )}
               </div>
             </div>
@@ -382,8 +382,8 @@ export function InvestmentsManagement() {
                 <CardHeader className="pb-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="rounded-xl p-2 bg-blue-50 dark:bg-blue-950/30">
-                        <Landmark className="size-4 text-blue-600 dark:text-blue-400" />
+                      <div className="rounded-xl p-2 bg-income-surface">
+                        <Landmark className="size-4 text-income" />
                       </div>
                       <div>
                         <CardTitle className="text-base">{item.name}</CardTitle>
@@ -440,8 +440,8 @@ export function InvestmentsManagement() {
                     <span
                       className={`font-semibold tabular-nums flex items-center gap-1 ${
                         isPositive
-                          ? "text-emerald-600 dark:text-emerald-400"
-                          : "text-rose-600 dark:text-rose-400"
+                          ? "text-foreground"
+                          : "text-expense"
                       }`}
                     >
                       {isPositive ? (

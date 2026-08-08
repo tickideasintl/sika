@@ -42,13 +42,13 @@ function getEventColor(eventType: InvestmentEventType) {
   switch (eventType) {
     case "return":
     case "dividend":
-      return "text-emerald-600 dark:text-emerald-400";
+      return "text-income";
     case "sale":
     case "partial_sale":
-      return "text-blue-600 dark:text-blue-400";
+      return "text-income";
     case "loss":
     case "fee":
-      return "text-rose-600 dark:text-rose-400";
+      return "text-expense";
     default:
       return "text-muted-foreground";
   }
@@ -58,13 +58,13 @@ function getEventBg(eventType: InvestmentEventType) {
   switch (eventType) {
     case "return":
     case "dividend":
-      return "bg-emerald-50 dark:bg-emerald-950/30";
+      return "bg-income-surface";
     case "sale":
     case "partial_sale":
-      return "bg-blue-50 dark:bg-blue-950/30";
+      return "bg-income-surface";
     case "loss":
     case "fee":
-      return "bg-rose-50 dark:bg-rose-950/30";
+      return "bg-expense-surface";
     default:
       return "bg-muted/50";
   }

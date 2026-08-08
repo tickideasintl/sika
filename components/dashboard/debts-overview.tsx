@@ -89,13 +89,13 @@ export function DebtsOverview() {
             <div className="grid grid-cols-2 gap-2">
               <div className="rounded-xl bg-rose-50/50 dark:bg-rose-950/20 p-3">
                 <p className="text-xs text-muted-foreground">Total Owed</p>
-                <p className="font-semibold tabular-nums text-rose-600 dark:text-rose-400">
+                <p className="font-semibold tabular-nums text-expense">
                   {formatCurrency(total_balance)}
                 </p>
               </div>
               <div className="rounded-xl bg-amber-50/50 dark:bg-amber-950/20 p-3">
                 <p className="text-xs text-muted-foreground">Monthly Min.</p>
-                <p className="font-semibold tabular-nums text-amber-600 dark:text-amber-400">
+                <p className="font-semibold tabular-nums text-obligation">
                   {formatCurrency(total_min_payment)}
                 </p>
               </div>
@@ -111,7 +111,7 @@ export function DebtsOverview() {
                     {item.debt_type === "credit_card" ? (
                       <CreditCard className="size-3.5 text-purple-500" />
                     ) : (
-                      <TrendingDown className="size-3.5 text-rose-500" />
+                      <TrendingDown className="size-3.5 text-expense" />
                     )}
                     <div>
                       <p className="font-medium">{item.name}</p>
@@ -121,7 +121,7 @@ export function DebtsOverview() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-medium tabular-nums text-rose-600 dark:text-rose-400">
+                    <p className="font-medium tabular-nums text-expense">
                       {formatCurrency(item.current_balance)}
                     </p>
                     {item.minimum_payment != null && (

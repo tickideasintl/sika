@@ -303,7 +303,7 @@ export function TransactionForm({
             </div>
 
             {receiptStorageId && (
-              <p className="text-sm text-emerald-600">Receipt attached</p>
+              <p className="text-sm text-muted-foreground">Receipt attached</p>
             )}
 
             <DialogFooter>

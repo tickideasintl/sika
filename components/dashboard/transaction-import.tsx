@@ -208,11 +208,11 @@ export function TransactionImport({ onImported }: TransactionImportProps) {
                 </div>
                 <div>
                   <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Ready to import</p>
-                  <p className="mt-1 text-2xl font-semibold text-emerald-600">{analysis.validRowCount}</p>
+                  <p className="mt-1 text-2xl font-semibold text-foreground">{analysis.validRowCount}</p>
                 </div>
                 <div>
                   <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Needs attention</p>
-                  <p className="mt-1 text-2xl font-semibold text-rose-600">{analysis.invalidRowCount}</p>
+                  <p className="mt-1 text-2xl font-semibold text-expense">{analysis.invalidRowCount}</p>
                 </div>
               </div>
 
@@ -241,7 +241,7 @@ export function TransactionImport({ onImported }: TransactionImportProps) {
               </div>
 
               {missingRequiredMappings.length > 0 && (
-                <p className="text-sm text-rose-600">
+                <p className="text-sm text-expense">
                   Map required fields before importing: {missingRequiredMappings.join(", ")}
                 </p>
               )}
@@ -271,7 +271,7 @@ export function TransactionImport({ onImported }: TransactionImportProps) {
                           <td className="px-3 py-2">{row.mapped.amount ? formatCurrency(Number.parseFloat(row.mapped.amount) || 0) : "-"}</td>
                           <td className="px-3 py-2">{row.mapped.type || "-"}</td>
                           <td className="px-3 py-2">{row.mapped.category || "-"}</td>
-                          <td className={`px-3 py-2 ${row.valid ? "text-emerald-600" : "text-rose-600"}`}>
+                          <td className={`px-3 py-2 ${row.valid ? "text-foreground" : "text-expense"}`}>
                             {row.valid ? "Ready" : row.errors.join(", ")}
                           </td>
                         </tr>

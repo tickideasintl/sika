@@ -1,6 +1,12 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Bind dark: to the .dark class ThemeProvider sets on <html>. Without this,
+   Tailwind v4 compiles every dark: utility into @media (prefers-color-scheme:
+   dark), so choosing Dark in the app switched the token surfaces but left ~200
+   dark: utilities keyed to the OS setting instead. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   /* Self-hosted by next/font in app/layout.tsx; never fetch fonts remotely. */
   --font-sans: var(--font-jakarta), system-ui, -apple-system, sans-serif;
@@ -28,6 +34,26 @@
   --color-input: hsl(240 6% 90%);
   --color-ring: hsl(221 83% 53%);
 
+  /* ─── Semantic money types ───
+     One token per kind of money movement, so a figure can never be coloured
+     without also being classified. Light mode uses the 700 step because 600
+     fails WCAG AA on white for emerald (3.65:1) and amber (3.20:1), and only
+     scrapes it for rose (4.48:1). Every value below clears 4.5:1 on the page,
+     on card white, and on its own -surface tint. */
+  --color-income: oklch(48.8% 0.243 264.376);
+  --color-income-surface: oklch(97% 0.014 254.604);
+  --color-expense: oklch(51.4% 0.222 16.935);
+  --color-expense-surface: oklch(96.9% 0.015 12.422);
+  --color-giving: oklch(50.8% 0.118 165.612);
+  --color-giving-surface: oklch(97.9% 0.021 166.113);
+  --color-obligation: oklch(55.5% 0.163 48.998);
+  --color-obligation-surface: oklch(98.7% 0.022 95.277);
+  /* For the rare case where a money type is the fill rather than the ink. */
+  --color-income-foreground: hsl(0 0% 100%);
+  --color-expense-foreground: hsl(0 0% 100%);
+  --color-giving-foreground: hsl(0 0% 100%);
+  --color-obligation-foreground: hsl(0 0% 100%);
+
   --radius: 0.75rem;
 }
 
@@ -53,7 +79,10 @@
   --color-popover: hsl(240 10% 7%);
   --color-popover-foreground: hsl(0 0% 98%);
   --color-primary: hsl(217 91% 60%);
-  --color-primary-foreground: hsl(0 0% 100%);
+  /* Ink, not white. The dark primary is light enough that white text on it is
+     only 3.64:1; near-black clears 5.22:1, and keeping the fill bright means
+     text-primary still reads at 5.22:1 against the page. */
+  --color-primary-foreground: hsl(240 10% 7%);
   --color-secondary: hsl(240 6% 14%);
   --color-secondary-foreground: hsl(0 0% 98%);
   --color-muted: hsl(240 6% 14%);
@@ -65,6 +94,24 @@
   --color-border: hsl(240 6% 16%);
   --color-input: hsl(240 6% 16%);
   --color-ring: hsl(217 91% 60%);
+
+  /* Semantic money types, dark. The 400 step, which clears 6.6:1 or better on
+     both the page and the card. Surfaces stay translucent so they read as a
+     tint of the surface beneath rather than a second opaque layer. */
+  --color-income: oklch(70.7% 0.165 254.624);
+  --color-income-surface: oklch(28.2% 0.091 267.935 / 0.3);
+  --color-expense: oklch(71.2% 0.194 13.428);
+  --color-expense-surface: oklch(27.1% 0.105 12.094 / 0.3);
+  --color-giving: oklch(76.5% 0.177 163.223);
+  --color-giving-surface: oklch(26.2% 0.051 172.552 / 0.3);
+  --color-obligation: oklch(82.8% 0.189 84.429);
+  --color-obligation-surface: oklch(27.9% 0.077 45.635 / 0.3);
+  /* The dark fills are light, so their ink inverts. White on dark-mode amber is
+     1.72:1; near-black clears it comfortably. */
+  --color-income-foreground: hsl(240 10% 7%);
+  --color-expense-foreground: hsl(240 10% 7%);
+  --color-giving-foreground: hsl(240 10% 7%);
+  --color-obligation-foreground: hsl(240 10% 7%);
 }
 
 /* ─── Reduced motion ─── */

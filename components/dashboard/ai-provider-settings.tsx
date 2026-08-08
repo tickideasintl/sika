@@ -304,7 +304,7 @@ export function AIProviderSettings() {
         {settings.provider === "openrouter" && (
           <div className="rounded-lg bg-muted p-4 text-sm">
             <p className="flex items-center gap-2 font-medium">
-              <Sparkles className="size-4 text-amber-500" />
+              <Sparkles className="size-4 text-primary" />
               Free models available on OpenRouter
             </p>
             <p className="mt-1 text-muted-foreground">

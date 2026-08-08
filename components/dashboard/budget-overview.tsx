@@ -99,13 +99,13 @@ export function BudgetOverview() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-sm font-medium">
                 {budget.type === "expense" ? (
-                  <div className="rounded-lg p-1.5 bg-rose-50 dark:bg-rose-950/30">
-                    <TrendingDown className="size-3.5 text-rose-500" />
+                  <div className="rounded-lg p-1.5 bg-expense-surface">
+                    <TrendingDown className="size-3.5 text-expense" />
                   </div>
                 ) : (
-                  <div className={`rounded-lg p-1.5 ${budget.type === "income" ? "bg-blue-50 dark:bg-blue-950/30" : "bg-emerald-50 dark:bg-emerald-950/30"}`}>
+                  <div className={`rounded-lg p-1.5 ${budget.type === "income" ? "bg-income-surface" : "bg-giving-surface"}`}>
                     <TrendingUp
-                      className={`size-3.5 ${budget.type === "income" ? "text-blue-500" : "text-emerald-500"}`}
+                      className={`size-3.5 ${budget.type === "income" ? "text-income" : "text-giving"}`}
                     />
                   </div>
                 )}
@@ -115,7 +115,7 @@ export function BudgetOverview() {
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 {(budget.status === "warning" || budget.status === "exceeded") && (
                   <AlertTriangle
-                    className={`size-3.5 ${budget.status === "exceeded" ? "text-rose-600" : "text-amber-500"}`}
+                    className={`size-3.5 ${budget.status === "exceeded" ? "text-expense" : "text-obligation"}`}
                   />
                 )}
                 <span className="tabular-nums">

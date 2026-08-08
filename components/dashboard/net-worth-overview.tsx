@@ -45,11 +45,11 @@ export function NetWorthOverview() {
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="text-sm text-muted-foreground">Current net worth</p>
-              <p className={`text-2xl font-semibold tabular-nums ${positive ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}`}>
+              <p className={`text-2xl font-semibold tabular-nums ${positive ? "text-foreground" : "text-expense"}`}>
                 {formatCurrency(data.netWorth)}
               </p>
             </div>
-            <Wallet className={`size-6 ${positive ? "text-emerald-500" : "text-rose-500"}`} />
+            <Wallet className={`size-6 ${positive ? "text-foreground" : "text-expense"}`} />
           </div>
         </div>
 
@@ -58,13 +58,13 @@ export function NetWorthOverview() {
             <div className="mb-1 flex items-center gap-2 text-xs text-muted-foreground">
               <Landmark className="size-3.5" /> Assets
             </div>
-            <p className="font-semibold tabular-nums text-blue-600 dark:text-blue-400">{formatCurrency(data.assets)}</p>
+            <p className="font-semibold tabular-nums text-income">{formatCurrency(data.assets)}</p>
           </div>
           <div className="rounded-xl bg-amber-50/50 p-3 dark:bg-amber-950/20">
             <div className="mb-1 flex items-center gap-2 text-xs text-muted-foreground">
               <Scale className="size-3.5" /> Liabilities
             </div>
-            <p className="font-semibold tabular-nums text-amber-600 dark:text-amber-400">{formatCurrency(data.liabilities)}</p>
+            <p className="font-semibold tabular-nums text-obligation">{formatCurrency(data.liabilities)}</p>
           </div>
         </div>
 

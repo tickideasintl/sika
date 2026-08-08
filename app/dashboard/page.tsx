@@ -142,30 +142,31 @@ export default function DashboardPage() {
     {
       title: "Income",
       value: totalIncome,
-      color: "text-blue-600 dark:text-blue-400",
-      bgColor: "bg-blue-50 dark:bg-blue-950/30",
+      color: "text-income",
+      bgColor: "bg-income-surface",
       icon: TrendingUp,
     },
     {
       title: "Expenses",
       value: totalExpenses,
-      color: "text-rose-600 dark:text-rose-400",
-      bgColor: "bg-rose-50 dark:bg-rose-950/30",
+      color: "text-expense",
+      bgColor: "bg-expense-surface",
       icon: ArrowDownRight,
     },
     {
       title: "Giving",
       value: totalGivings,
-      color: "text-emerald-600 dark:text-emerald-400",
-      bgColor: "bg-emerald-50 dark:bg-emerald-950/30",
+      color: "text-giving",
+      bgColor: "bg-giving-surface",
       icon: ArrowUpRight,
     },
     {
       title: "Net balance",
       value: Math.abs(netBalance),
       subtitle: netBalance >= 0 ? "Surplus" : "Deficit",
-      color: netBalance >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400",
-      bgColor: netBalance >= 0 ? "bg-emerald-50 dark:bg-emerald-950/30" : "bg-rose-50 dark:bg-rose-950/30",
+      // Surplus is not giving: polarity earns no money-type colour.
+      color: netBalance >= 0 ? "text-foreground" : "text-expense",
+      bgColor: netBalance >= 0 ? "bg-muted" : "bg-expense-surface",
       icon: Wallet,
     },
   ];
@@ -293,10 +294,10 @@ export default function DashboardPage() {
                     className={cn(
                       "font-semibold tabular-nums",
                       tx.type === "income"
-                        ? "text-blue-600 dark:text-blue-400"
+                        ? "text-income"
                         : tx.type === "giving"
-                        ? "text-emerald-600 dark:text-emerald-400"
-                        : "text-rose-600 dark:text-rose-400"
+                        ? "text-giving"
+                        : "text-expense"
                     )}
                   >
                     {tx.type === "expense" ? "-" : "+"}

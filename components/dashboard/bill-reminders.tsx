@@ -25,10 +25,10 @@ interface BillWithUrgency {
 }
 
 const URGENCY_CONFIG: Record<DueUrgency, { label: string; color: string; bgColor: string; icon: typeof Clock }> = {
-  overdue: { label: "Overdue", color: "text-rose-600 dark:text-rose-400", bgColor: "bg-rose-50 dark:bg-rose-950/30", icon: AlertCircle },
-  today: { label: "Due today", color: "text-amber-600 dark:text-amber-400", bgColor: "bg-amber-50 dark:bg-amber-950/30", icon: Clock },
-  soon: { label: "Due soon", color: "text-amber-600 dark:text-amber-400", bgColor: "bg-amber-50 dark:bg-amber-950/30", icon: Clock },
-  upcoming: { label: "Upcoming", color: "text-blue-600 dark:text-blue-400", bgColor: "bg-blue-50 dark:bg-blue-950/30", icon: Calendar },
+  overdue: { label: "Overdue", color: "text-expense", bgColor: "bg-expense-surface", icon: AlertCircle },
+  today: { label: "Due today", color: "text-obligation", bgColor: "bg-obligation-surface", icon: Clock },
+  soon: { label: "Due soon", color: "text-obligation", bgColor: "bg-obligation-surface", icon: Clock },
+  upcoming: { label: "Upcoming", color: "text-blue-700 dark:text-blue-400", bgColor: "bg-blue-50 dark:bg-blue-950/30", icon: Calendar },
   future: { label: "Later", color: "text-muted-foreground", bgColor: "bg-muted", icon: Calendar },
 };
 
@@ -141,10 +141,10 @@ export function BillReminders() {
           </div>
         ) : displayBills.length === 0 ? (
           <div className="py-6 text-center">
-            <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-2xl bg-emerald-50 dark:bg-emerald-950/30">
-              <CheckCircle2 className="size-5 text-emerald-600 dark:text-emerald-400" />
+            <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-2xl bg-muted">
+              <CheckCircle2 className="size-5 text-muted-foreground" />
             </div>
-            <p className="font-medium text-emerald-600 dark:text-emerald-400">All caught up!</p>
+            <p className="font-medium text-foreground">All caught up!</p>
             <p className="mt-1 text-sm text-muted-foreground">
               No upcoming bills due.
             </p>
@@ -155,7 +155,7 @@ export function BillReminders() {
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-xl bg-rose-50/50 dark:bg-rose-950/20 p-3">
                 <p className="text-xs text-muted-foreground">Unpaid this month</p>
-                <p className="mt-1 text-lg font-semibold tabular-nums text-rose-600 dark:text-rose-400">
+                <p className="mt-1 text-lg font-semibold tabular-nums text-expense">
                   {formatCurrency(totalUnpaid)}
                 </p>
               </div>
@@ -213,7 +213,7 @@ export function BillReminders() {
             {/* Quick actions */}
             {urgentCount > 0 && (
               <div className="rounded-xl border border-amber-200/50 dark:border-amber-800/30 bg-amber-50/30 dark:bg-amber-950/10 p-3">
-                <p className="text-sm font-medium text-amber-700 dark:text-amber-400">
+                <p className="text-sm font-medium text-obligation">
                   {urgentCount} bill{urgentCount === 1 ? "" : "s"} need{urgentCount === 1 ? "s" : ""} attention
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">

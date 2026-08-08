@@ -368,15 +368,15 @@ export function RecurringOutgoingsManagement() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Total Monthly Outgoings</p>
-                <p className="text-2xl font-semibold text-rose-600 dark:text-rose-400 tabular-nums">
+                <p className="text-2xl font-semibold text-expense tabular-nums">
                   {formatCurrency(monthlyTotal)}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
                   {data?.active_count ?? 0} active {(data?.active_count ?? 0) === 1 ? "outgoing" : "outgoings"}
                 </p>
               </div>
-              <div className="rounded-xl bg-rose-50 dark:bg-rose-950/30 p-3">
-                <Receipt className="size-6 text-rose-600 dark:text-rose-400" />
+              <div className="rounded-xl bg-expense-surface p-3">
+                <Receipt className="size-6 text-expense" />
               </div>
             </div>
           </CardContent>
@@ -387,15 +387,15 @@ export function RecurringOutgoingsManagement() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Paid This Month</p>
-                <p className="text-2xl font-semibold text-emerald-600 dark:text-emerald-400 tabular-nums">
+                <p className="text-2xl font-semibold text-foreground tabular-nums">
                   {formatCurrency(paidTotal)}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
                   {paidCount} of {activeOutgoings.length} paid
                 </p>
               </div>
-              <div className="rounded-xl bg-emerald-50 dark:bg-emerald-950/30 p-3">
-                <CheckCircle2 className="size-6 text-emerald-600 dark:text-emerald-400" />
+              <div className="rounded-xl bg-muted p-3">
+                <CheckCircle2 className="size-6 text-muted-foreground" />
               </div>
             </div>
           </CardContent>
@@ -406,15 +406,15 @@ export function RecurringOutgoingsManagement() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Overdue</p>
-                <p className={`text-2xl font-semibold tabular-nums ${overdueCount > 0 ? "text-amber-600 dark:text-amber-400" : "text-muted-foreground"}`}>
+                <p className={`text-2xl font-semibold tabular-nums ${overdueCount > 0 ? "text-obligation" : "text-muted-foreground"}`}>
                   {overdueCount}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
                   {overdueCount === 0 ? "All caught up" : "past due date, not logged"}
                 </p>
               </div>
-              <div className={`rounded-xl p-3 ${overdueCount > 0 ? "bg-amber-50 dark:bg-amber-950/30" : "bg-muted"}`}>
-                <Clock className={`size-6 ${overdueCount > 0 ? "text-amber-600 dark:text-amber-400" : "text-muted-foreground"}`} />
+              <div className={`rounded-xl p-3 ${overdueCount > 0 ? "bg-obligation-surface" : "bg-muted"}`}>
+                <Clock className={`size-6 ${overdueCount > 0 ? "text-obligation" : "text-muted-foreground"}`} />
               </div>
             </div>
           </CardContent>
@@ -511,18 +511,18 @@ export function RecurringOutgoingsManagement() {
                       <div
                         className={`rounded-xl p-2 ${
                           isPaid
-                            ? "bg-emerald-50 dark:bg-emerald-950/30"
+                            ? "bg-muted"
                             : isOverdue
-                            ? "bg-amber-50 dark:bg-amber-950/30"
-                            : "bg-rose-50 dark:bg-rose-950/30"
+                            ? "bg-obligation-surface"
+                            : "bg-expense-surface"
                         }`}
                       >
                         {isPaid ? (
-                          <CheckCircle2 className="size-4 text-emerald-600 dark:text-emerald-400" />
+                          <CheckCircle2 className="size-4 text-muted-foreground" />
                         ) : isOverdue ? (
-                          <Clock className="size-4 text-amber-600 dark:text-amber-400" />
+                          <Clock className="size-4 text-obligation" />
                         ) : (
-                          <Receipt className="size-4 text-rose-600 dark:text-rose-400" />
+                          <Receipt className="size-4 text-expense" />
                         )}
                       </div>
                       <div>
@@ -532,12 +532,12 @@ export function RecurringOutgoingsManagement() {
                             <p className="text-xs text-muted-foreground">{item.category}</p>
                           )}
                           {isPaid && (
-                            <span className="text-[10px] bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 px-1.5 py-0.5 rounded-full font-medium">
+                            <span className="text-[10px] bg-muted text-foreground px-1.5 py-0.5 rounded-full font-medium">
                               Paid
                             </span>
                           )}
                           {isOverdue && (
-                            <span className="text-[10px] bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 px-1.5 py-0.5 rounded-full font-medium">
+                            <span className="text-[10px] bg-amber-100 dark:bg-amber-950/40 text-obligation px-1.5 py-0.5 rounded-full font-medium">
                               Overdue
                             </span>
                           )}
@@ -569,7 +569,7 @@ export function RecurringOutgoingsManagement() {
                 <CardContent className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Amount</span>
-                    <span className="font-semibold tabular-nums text-rose-600 dark:text-rose-400">
+                    <span className="font-semibold tabular-nums text-expense">
                       {formatCurrency(item.amount)}
                     </span>
                   </div>
@@ -599,7 +599,7 @@ export function RecurringOutgoingsManagement() {
                     <div className="pt-2 border-t border-border/50">
                       {isPaid ? (
                         <div className="flex items-center justify-between">
-                          <p className="text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                          <p className="text-xs text-muted-foreground flex items-center gap-1">
                             <CheckCircle2 className="size-3" />
                             Paid on {new Date(item.payment_status.paid_at!).toLocaleDateString("en-GB")}
                           </p>
@@ -619,7 +619,7 @@ export function RecurringOutgoingsManagement() {
                           variant={isOverdue ? "default" : "outline"}
                           className={`w-full h-8 text-xs ${
                             isOverdue
-                              ? "bg-amber-600 hover:bg-amber-700 text-white"
+                              ? "bg-obligation hover:bg-obligation/90 text-obligation-foreground"
                               : ""
                           }`}
                           disabled={isLogging}

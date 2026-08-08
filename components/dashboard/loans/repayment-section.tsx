@@ -188,7 +188,7 @@ export function RepaymentSection({ loanId, onChanged }: RepaymentSectionProps) {
                 className="flex items-center justify-between rounded-lg bg-muted/50 px-3 py-2 text-sm"
               >
                 <div>
-                  <p className="font-medium tabular-nums text-emerald-600 dark:text-emerald-400">
+                  <p className="font-medium tabular-nums text-foreground">
                     {formatCurrency(repayment.amount)}
                   </p>
                   <p className="text-xs text-muted-foreground">
@@ -202,9 +202,9 @@ export function RepaymentSection({ loanId, onChanged }: RepaymentSectionProps) {
                   <span
                     className={`text-xs font-medium tabular-nums flex items-center gap-0.5 ${
                       change > 0
-                        ? "text-emerald-600 dark:text-emerald-400"
+                        ? "text-foreground"
                         : change < 0
-                        ? "text-rose-600 dark:text-rose-400"
+                        ? "text-expense"
                         : "text-muted-foreground"
                     }`}
                   >

@@ -103,19 +103,19 @@ export function OutgoingsOverview() {
           <div className="space-y-3">
             <div className="flex items-center justify-between rounded-xl bg-rose-50/50 dark:bg-rose-950/20 p-3">
               <span className="text-sm text-muted-foreground">Total per month</span>
-              <span className="font-semibold tabular-nums text-rose-600 dark:text-rose-400">
+              <span className="font-semibold tabular-nums text-expense">
                 {formatCurrency(monthly_total)}
               </span>
             </div>
 
             {/* Payment progress */}
             <div className="flex items-center gap-3 text-xs">
-              <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
+              <span className="flex items-center gap-1 text-foreground">
                 <CheckCircle2 className="size-3" />
                 {paidCount} paid
               </span>
               {overdueCount > 0 && (
-                <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400">
+                <span className="flex items-center gap-1 text-obligation">
                   <Clock className="size-3" />
                   {overdueCount} overdue
                 </span>
@@ -152,27 +152,27 @@ export function OutgoingsOverview() {
                   >
                     <div className="flex items-center gap-2">
                       {isPaid ? (
-                        <CheckCircle2 className="size-3.5 text-emerald-500" />
+                        <CheckCircle2 className="size-3.5 text-muted-foreground" />
                       ) : isOverdue ? (
-                        <Clock className="size-3.5 text-amber-500" />
+                        <Clock className="size-3.5 text-obligation" />
                       ) : (
-                        <CalendarDays className={`size-3.5 ${isToday ? "text-amber-500" : "text-muted-foreground"}`} />
+                        <CalendarDays className={`size-3.5 ${isToday ? "text-obligation" : "text-muted-foreground"}`} />
                       )}
                       <span className={`font-medium ${isPaid ? "line-through text-muted-foreground" : ""}`}>
                         {item.name}
                       </span>
                       {isPaid && (
-                        <span className="text-[10px] bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 px-1.5 py-0.5 rounded-full font-medium">
+                        <span className="text-[10px] bg-muted text-foreground px-1.5 py-0.5 rounded-full font-medium">
                           Paid
                         </span>
                       )}
                       {isOverdue && (
-                        <span className="text-[10px] bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 px-1.5 py-0.5 rounded-full font-medium">
+                        <span className="text-[10px] bg-amber-100 dark:bg-amber-950/40 text-obligation px-1.5 py-0.5 rounded-full font-medium">
                           Overdue
                         </span>
                       )}
                       {!isPaid && !isOverdue && isToday && (
-                        <span className="text-[10px] bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 px-1.5 py-0.5 rounded-full font-medium">
+                        <span className="text-[10px] bg-amber-100 dark:bg-amber-950/40 text-obligation px-1.5 py-0.5 rounded-full font-medium">
                           Today
                         </span>
                       )}
@@ -183,7 +183,7 @@ export function OutgoingsOverview() {
                       )}
                     </div>
                     <div className="text-right">
-                      <p className={`font-medium tabular-nums ${isPaid ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}`}>
+                      <p className={`font-medium tabular-nums ${isPaid ? "text-foreground" : "text-expense"}`}>
                         {formatCurrency(item.amount)}
                       </p>
                       <p className="text-[10px] text-muted-foreground">
