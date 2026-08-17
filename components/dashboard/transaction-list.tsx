@@ -164,8 +164,15 @@ export function TransactionList({ refreshKey = 0 }: TransactionListProps) {
   }, [refreshKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (new URLSearchParams(window.location.search).get("needsReview") === "true") {
+    const search = new URLSearchParams(window.location.search);
+    if (search.get("needsReview") === "true") {
       setReviewFilter("needs_review");
+    }
+    // Arriving from a money figure elsewhere in the app — a dashboard stat tile,
+    // a report — lands on that type already filtered rather than on everything.
+    const type = search.get("type");
+    if (typeFilterOptions.some((option) => option.value === type)) {
+      setTypeFilter(type as TypeFilter);
     }
     setLocationFilterReady(true);
     if (window.location.hash === "#transaction-search") {

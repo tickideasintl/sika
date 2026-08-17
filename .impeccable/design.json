@@ -1,133 +1,374 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-08T09:00:00.000Z",
+  "generatedAt": "2026-08-16T22:47:20.235Z",
   "title": "Design System: Sika",
   "extensions": {
     "colorMeta": {
       "primary": {
         "role": "primary",
-        "displayName": "Signal Blue",
-        "canonical": "hsl(221 83% 53%)",
+        "displayName": "Contrast Slab",
+        "canonical": "hsl(240 6% 5%)",
         "tonalRamp": [
-          "#172554",
-          "#1e40af",
-          "#1d4ed8",
-          "#2563eb",
-          "#3b82f6",
-          "#60a5fa",
-          "#93c5fd",
-          "#dbeafe"
+          "hsl(240 6% 15%)",
+          "hsl(240 6% 26%)",
+          "hsl(240 6% 37%)",
+          "hsl(240 6% 48%)",
+          "hsl(240 6% 59%)",
+          "hsl(240 6% 70%)",
+          "hsl(240 6% 82%)",
+          "hsl(240 6% 94%)"
         ]
       },
-      "background": {
-        "role": "neutral",
-        "displayName": "Paper",
-        "canonical": "hsl(0 0% 99%)",
+      "brand": {
+        "role": "secondary",
+        "displayName": "Sika Mint",
+        "canonical": "hsl(157 72% 26%)",
         "tonalRamp": [
-          "hsl(240 10% 4%)",
-          "hsl(240 10% 7%)",
-          "hsl(240 6% 14%)",
-          "hsl(240 6% 16%)",
-          "hsl(240 4% 44%)",
-          "hsl(240 5% 58%)",
-          "hsl(240 6% 90%)",
-          "hsl(0 0% 99%)"
+          "hsl(157 60% 15%)",
+          "hsl(157 60% 26%)",
+          "hsl(157 60% 37%)",
+          "hsl(157 60% 48%)",
+          "hsl(157 60% 59%)",
+          "hsl(157 60% 70%)",
+          "hsl(157 60% 82%)",
+          "hsl(157 60% 94%)"
         ]
-      },
-      "foreground": {
-        "role": "neutral",
-        "displayName": "Ink",
-        "canonical": "hsl(240 6% 10%)"
-      },
-      "muted-foreground": {
-        "role": "neutral",
-        "displayName": "Graphite",
-        "canonical": "hsl(240 4% 44%)"
-      },
-      "muted": {
-        "role": "neutral",
-        "displayName": "Wash",
-        "canonical": "hsl(240 5% 96%)"
-      },
-      "border": {
-        "role": "neutral",
-        "displayName": "Hairline",
-        "canonical": "hsl(240 6% 90%)"
-      },
-      "destructive": {
-        "role": "neutral",
-        "displayName": "Alarm Red",
-        "canonical": "hsl(0 84% 60%)"
       },
       "income": {
         "role": "secondary",
         "displayName": "Inflow Blue",
-        "canonical": "#1447e6",
-        "darkValue": "#51a2ff",
+        "canonical": "oklch(48.8% 0.243 264.376)",
         "tonalRamp": [
-          "#162456",
-          "#1c398e",
-          "#193cb8",
-          "#1447e6",
-          "#155dfc",
-          "#51a2ff",
-          "#8ec5ff",
-          "#dbeafe"
+          "oklch(15% 0.149 264.376)",
+          "oklch(26% 0.175 264.376)",
+          "oklch(37% 0.203 264.376)",
+          "oklch(48% 0.229 264.376)",
+          "oklch(59% 0.229 264.376)",
+          "oklch(70% 0.203 264.376)",
+          "oklch(82% 0.175 264.376)",
+          "oklch(94% 0.149 264.376)"
         ]
       },
       "expense": {
         "role": "secondary",
         "displayName": "Outflow Rose",
-        "canonical": "#c20039",
-        "darkValue": "#ff667f",
+        "canonical": "oklch(51.4% 0.222 16.935)",
         "tonalRamp": [
-          "#4d0218",
-          "#8b0836",
-          "#9f0712",
-          "#c20039",
-          "#ec003f",
-          "#ff667f",
-          "#ffa1ad",
-          "#ffe4e6"
+          "oklch(41% 0.159 10.272)",
+          "oklch(45.5% 0.188 13.697)",
+          "oklch(51.4% 0.222 16.935)",
+          "oklch(58.6% 0.253 17.585)",
+          "oklch(64.5% 0.246 16.439)",
+          "oklch(71.2% 0.194 13.428)",
+          "oklch(77.9% 0.14 10.9)",
+          "oklch(84.6% 0.088 9)"
         ]
       },
       "giving": {
         "role": "secondary",
         "displayName": "Giving Green",
-        "canonical": "#007956",
-        "darkValue": "#00d294",
+        "canonical": "oklch(50.8% 0.118 165.612)",
         "tonalRamp": [
-          "#002c22",
-          "#004f3b",
-          "#006045",
-          "#007956",
-          "#009966",
-          "#00d294",
-          "#5ee9b5",
-          "#d0fae5"
+          "oklch(15% 0.072 165.612)",
+          "oklch(26% 0.085 165.612)",
+          "oklch(37% 0.098 165.612)",
+          "oklch(48% 0.111 165.612)",
+          "oklch(59% 0.111 165.612)",
+          "oklch(70% 0.098 165.612)",
+          "oklch(82% 0.085 165.612)",
+          "oklch(94% 0.072 165.612)"
         ]
       },
       "obligation": {
         "role": "secondary",
         "displayName": "Obligation Amber",
-        "canonical": "#b75000",
-        "darkValue": "#ffb900",
+        "canonical": "oklch(55.5% 0.163 48.998)",
         "tonalRamp": [
-          "#461901",
-          "#7b3306",
-          "#973c00",
-          "#b75000",
-          "#e17100",
-          "#ffb900",
-          "#ffd230",
-          "#fef3c6"
+          "oklch(15% 0.100 48.998)",
+          "oklch(26% 0.118 48.998)",
+          "oklch(37% 0.136 48.998)",
+          "oklch(48% 0.154 48.998)",
+          "oklch(59% 0.154 48.998)",
+          "oklch(70% 0.136 48.998)",
+          "oklch(82% 0.118 48.998)",
+          "oklch(94% 0.100 48.998)"
+        ]
+      },
+      "hero": {
+        "role": "tertiary",
+        "displayName": "Forest",
+        "canonical": "hsl(157 45% 11%)",
+        "tonalRamp": [
+          "hsl(157 45% 15%)",
+          "hsl(157 45% 26%)",
+          "hsl(157 45% 37%)",
+          "hsl(157 45% 48%)",
+          "hsl(157 45% 59%)",
+          "hsl(157 45% 70%)",
+          "hsl(157 45% 82%)",
+          "hsl(157 45% 94%)"
+        ]
+      },
+      "hero-debt": {
+        "role": "tertiary",
+        "displayName": "Ember",
+        "canonical": "hsl(33 46% 12%)",
+        "tonalRamp": [
+          "hsl(33 46% 15%)",
+          "hsl(33 46% 26%)",
+          "hsl(33 46% 37%)",
+          "hsl(33 46% 48%)",
+          "hsl(33 46% 59%)",
+          "hsl(33 46% 70%)",
+          "hsl(33 46% 82%)",
+          "hsl(33 46% 94%)"
+        ]
+      },
+      "background": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "canonical": "hsl(45 15% 97%)",
+        "tonalRamp": [
+          "hsl(45 12% 15%)",
+          "hsl(45 12% 26%)",
+          "hsl(45 12% 37%)",
+          "hsl(45 12% 48%)",
+          "hsl(45 12% 59%)",
+          "hsl(45 12% 70%)",
+          "hsl(45 12% 82%)",
+          "hsl(45 12% 94%)"
+        ]
+      },
+      "card": {
+        "role": "neutral",
+        "displayName": "Card White",
+        "canonical": "hsl(0 0% 100%)",
+        "tonalRamp": [
+          "hsl(0 0% 15%)",
+          "hsl(0 0% 26%)",
+          "hsl(0 0% 37%)",
+          "hsl(0 0% 48%)",
+          "hsl(0 0% 59%)",
+          "hsl(0 0% 70%)",
+          "hsl(0 0% 82%)",
+          "hsl(0 0% 94%)"
+        ]
+      },
+      "sunken": {
+        "role": "neutral",
+        "displayName": "Sunken",
+        "canonical": "hsl(45 12% 95%)",
+        "tonalRamp": [
+          "hsl(45 12% 15%)",
+          "hsl(45 12% 26%)",
+          "hsl(45 12% 37%)",
+          "hsl(45 12% 48%)",
+          "hsl(45 12% 59%)",
+          "hsl(45 12% 70%)",
+          "hsl(45 12% 82%)",
+          "hsl(45 12% 94%)"
+        ]
+      },
+      "track": {
+        "role": "neutral",
+        "displayName": "Track",
+        "canonical": "hsl(45 8% 89%)",
+        "tonalRamp": [
+          "hsl(45 8% 15%)",
+          "hsl(45 8% 26%)",
+          "hsl(45 8% 37%)",
+          "hsl(45 8% 48%)",
+          "hsl(45 8% 59%)",
+          "hsl(45 8% 70%)",
+          "hsl(45 8% 82%)",
+          "hsl(45 8% 94%)"
+        ]
+      },
+      "foreground": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "hsl(240 6% 5%)",
+        "tonalRamp": [
+          "hsl(240 6% 15%)",
+          "hsl(240 6% 26%)",
+          "hsl(240 6% 37%)",
+          "hsl(240 6% 48%)",
+          "hsl(240 6% 59%)",
+          "hsl(240 6% 70%)",
+          "hsl(240 6% 82%)",
+          "hsl(240 6% 94%)"
+        ]
+      },
+      "muted-foreground": {
+        "role": "neutral",
+        "displayName": "Graphite",
+        "canonical": "hsl(240 4% 42%)",
+        "tonalRamp": [
+          "hsl(240 4% 15%)",
+          "hsl(240 4% 26%)",
+          "hsl(240 4% 37%)",
+          "hsl(240 4% 48%)",
+          "hsl(240 4% 59%)",
+          "hsl(240 4% 70%)",
+          "hsl(240 4% 82%)",
+          "hsl(240 4% 94%)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Wash",
+        "canonical": "hsl(45 12% 93%)",
+        "tonalRamp": [
+          "hsl(45 12% 15%)",
+          "hsl(45 12% 26%)",
+          "hsl(45 12% 37%)",
+          "hsl(45 12% 48%)",
+          "hsl(45 12% 59%)",
+          "hsl(45 12% 70%)",
+          "hsl(45 12% 82%)",
+          "hsl(45 12% 94%)"
+        ]
+      },
+      "border": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "hsl(45 8% 88%)",
+        "tonalRamp": [
+          "hsl(45 8% 15%)",
+          "hsl(45 8% 26%)",
+          "hsl(45 8% 37%)",
+          "hsl(45 8% 48%)",
+          "hsl(45 8% 59%)",
+          "hsl(45 8% 70%)",
+          "hsl(45 8% 82%)",
+          "hsl(45 8% 94%)"
+        ]
+      },
+      "destructive": {
+        "role": "tertiary",
+        "displayName": "Destructive Rose",
+        "canonical": "hsl(0 84% 60%)",
+        "tonalRamp": [
+          "hsl(0 84% 15%)",
+          "hsl(0 84% 26%)",
+          "hsl(0 84% 37%)",
+          "hsl(0 84% 48%)",
+          "hsl(0 84% 59%)",
+          "hsl(0 84% 70%)",
+          "hsl(0 84% 82%)",
+          "hsl(0 84% 94%)"
+        ]
+      },
+      "dark-background": {
+        "role": "neutral",
+        "displayName": "Canvas",
+        "canonical": "hsl(240 8% 5%)",
+        "tonalRamp": [
+          "hsl(240 8% 15%)",
+          "hsl(240 8% 26%)",
+          "hsl(240 8% 37%)",
+          "hsl(240 8% 48%)",
+          "hsl(240 8% 59%)",
+          "hsl(240 8% 70%)",
+          "hsl(240 8% 82%)",
+          "hsl(240 8% 94%)"
+        ]
+      },
+      "dark-card": {
+        "role": "neutral",
+        "displayName": "Raised Canvas",
+        "canonical": "hsl(240 5% 8%)",
+        "tonalRamp": [
+          "hsl(240 5% 15%)",
+          "hsl(240 5% 26%)",
+          "hsl(240 5% 37%)",
+          "hsl(240 5% 48%)",
+          "hsl(240 5% 59%)",
+          "hsl(240 5% 70%)",
+          "hsl(240 5% 82%)",
+          "hsl(240 5% 94%)"
+        ]
+      },
+      "dark-income": {
+        "role": "secondary",
+        "displayName": "Inflow Blue (dark)",
+        "canonical": "oklch(76.9% 0.117 261.6)",
+        "tonalRamp": [
+          "oklch(15% 0.072 261.6)",
+          "oklch(26% 0.085 261.6)",
+          "oklch(37% 0.098 261.6)",
+          "oklch(48% 0.111 261.6)",
+          "oklch(59% 0.111 261.6)",
+          "oklch(70% 0.098 261.6)",
+          "oklch(82% 0.085 261.6)",
+          "oklch(94% 0.072 261.6)"
+        ]
+      },
+      "dark-expense": {
+        "role": "secondary",
+        "displayName": "Outflow Rose (dark)",
+        "canonical": "oklch(76.5% 0.142 11.8)",
+        "tonalRamp": [
+          "oklch(15% 0.087 11.8)",
+          "oklch(26% 0.103 11.8)",
+          "oklch(37% 0.118 11.8)",
+          "oklch(48% 0.134 11.8)",
+          "oklch(59% 0.134 11.8)",
+          "oklch(70% 0.118 11.8)",
+          "oklch(82% 0.103 11.8)",
+          "oklch(94% 0.087 11.8)"
+        ]
+      },
+      "dark-giving": {
+        "role": "secondary",
+        "displayName": "Giving Green (dark)",
+        "canonical": "oklch(83.4% 0.129 162.7)",
+        "tonalRamp": [
+          "oklch(15% 0.079 162.7)",
+          "oklch(26% 0.093 162.7)",
+          "oklch(37% 0.108 162.7)",
+          "oklch(48% 0.122 162.7)",
+          "oklch(59% 0.122 162.7)",
+          "oklch(70% 0.108 162.7)",
+          "oklch(82% 0.093 162.7)",
+          "oklch(94% 0.079 162.7)"
+        ]
+      },
+      "dark-obligation": {
+        "role": "secondary",
+        "displayName": "Obligation Amber (dark)",
+        "canonical": "oklch(85.6% 0.126 76)",
+        "tonalRamp": [
+          "oklch(15% 0.077 76)",
+          "oklch(26% 0.091 76)",
+          "oklch(37% 0.105 76)",
+          "oklch(48% 0.119 76)",
+          "oklch(59% 0.119 76)",
+          "oklch(70% 0.105 76)",
+          "oklch(82% 0.091 76)",
+          "oklch(94% 0.077 76)"
+        ]
+      },
+      "dark-brand": {
+        "role": "secondary",
+        "displayName": "Sika Mint (dark)",
+        "canonical": "hsl(146 61% 69%)",
+        "tonalRamp": [
+          "hsl(146 61% 15%)",
+          "hsl(146 61% 26%)",
+          "hsl(146 61% 37%)",
+          "hsl(146 61% 48%)",
+          "hsl(146 61% 59%)",
+          "hsl(146 61% 70%)",
+          "hsl(146 61% 82%)",
+          "hsl(146 61% 94%)"
         ]
       }
     },
     "typographyMeta": {
       "display": {
         "displayName": "Display",
-        "purpose": "Landing headline. Once per page, marketing surfaces only."
+        "purpose": "The landing headline. Once per page, marketing surfaces only."
       },
       "headline": {
         "displayName": "Headline",
@@ -135,15 +376,15 @@
       },
       "title": {
         "displayName": "Title",
-        "purpose": "Card titles and section headings."
+        "purpose": "Card titles and section headings, in the display face at 1rem."
       },
       "body": {
         "displayName": "Body",
-        "purpose": "Default text across the app. The application is built at 14px, not 16px."
+        "purpose": "Default text across the application. The app is built at 14px, not 16px."
       },
       "control": {
         "displayName": "Control",
-        "purpose": "Buttons, nav items, input values, table cells."
+        "purpose": "Navigation, input values, table cells, and outline/ghost buttons."
       },
       "label": {
         "displayName": "Label",
@@ -151,19 +392,14 @@
       },
       "amount": {
         "displayName": "Amount",
-        "purpose": "Every currency figure. Tabular figures are mandatory."
+        "purpose": "Every currency figure in a row, cell or list. Tabular, always."
       }
     },
     "shadows": [
       {
-        "name": "resting-surface",
-        "value": "0 1px 2px 0 rgb(0 0 0 / 0.02)",
-        "purpose": "Cards and panels. Barely perceptible; the hairline border does the work."
-      },
-      {
         "name": "control",
         "value": "0 1px 2px 0 rgb(0 0 0 / 0.05)",
-        "purpose": "Filled primary and destructive buttons only. Outline and ghost stay flat."
+        "purpose": "Filled primary and destructive buttons only. Outline and ghost buttons stay flat."
       },
       {
         "name": "transient",
@@ -173,44 +409,39 @@
       {
         "name": "modal",
         "value": "0 25px 50px -12px rgb(0 0 0 / 0.1)",
-        "purpose": "Dialogs, paired with a 60% black overlay and a 4px backdrop blur."
+        "purpose": "Dialogs, paired with a 60%-black overlay and a 4px backdrop blur."
+      },
+      {
+        "name": "floating-bar",
+        "value": "0 14px 34px rgb(0 0 0 / 0.2)",
+        "purpose": "The mobile tab bar, which genuinely floats over scrolling content. Deepens to 0.55 in dark — the only tier that changes value between themes."
       }
     ],
     "motion": [
       {
-        "name": "ease-standard",
-        "value": "cubic-bezier(0.4, 0, 0.2, 1)",
-        "purpose": "Default easing for every state transition."
-      },
-      {
-        "name": "duration-state",
+        "name": "duration-default",
         "value": "200ms",
-        "purpose": "Buttons, inputs, nav, and Radix open/close animations."
+        "purpose": "Every hover, focus and overlay transition in the system."
       },
       {
-        "name": "duration-expressive",
+        "name": "duration-meter",
         "value": "500ms",
-        "purpose": "Budget progress fill only. The slowest motion in the system."
+        "purpose": "Budget progress fill. The only place duration is used expressively."
       },
       {
         "name": "press",
         "value": "scale(0.98)",
-        "purpose": "Active state on every button. The system's tactile signature."
+        "purpose": "Active state on every button; what makes the app feel connected to the finger."
+      },
+      {
+        "name": "overlay-enter",
+        "value": "fade + zoom-in-95 + short directional slide",
+        "purpose": "Dialogs, dropdowns and selects, supplied by tw-animate-css."
       },
       {
         "name": "reduced-motion",
         "value": "0.01ms",
-        "purpose": "Global prefers-reduced-motion override in app/globals.css. Must stay honored."
-      },
-      {
-        "name": "overlay-enter",
-        "value": "enter 200ms: fade + scale(0.95) + short directional slide",
-        "purpose": "Dialogs, dropdowns and selects. Supplied by tw-animate-css, imported at the top of app/globals.css."
-      },
-      {
-        "name": "overlay-exit",
-        "value": "exit 200ms: fade + scale(0.95), reversing the entry direction",
-        "purpose": "Same surfaces on close. Toasts differ: they exit to the right and fade to 80%, so a swiped toast looks thrown rather than deleted."
+        "purpose": "The global prefers-reduced-motion block flattens all animation and transition duration."
       }
     ],
     "breakpoints": [
@@ -241,84 +472,90 @@
       "name": "Primary Button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "The single filled action per view. Signal Blue, faint shadow, 0.98 press.",
-      "html": "<button class=\"ds-btn-primary\"><svg class=\"ds-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 12h14\"/><path d=\"M12 5v14\"/></svg>Add transaction</button>",
-      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; height: 2.5rem; padding: 0 1rem; border: none; border-radius: 0.5rem; background: var(--color-primary); color: var(--color-primary-foreground); font-size: 0.875rem; font-weight: 500; line-height: 1; white-space: nowrap; cursor: pointer; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-btn-primary .ds-icon { width: 1rem; height: 1rem; } .ds-btn-primary:hover { background: color-mix(in srgb, var(--color-primary) 90%, transparent); } .ds-btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--color-background), 0 0 0 4px var(--color-ring); } .ds-btn-primary:active { transform: scale(0.98); } .ds-btn-primary:disabled { opacity: 0.5; pointer-events: none; }"
+      "description": "The one action on a row you are meant to press. A neutral contrast slab, never a hue, so it can never be mistaken for a money figure.",
+      "html": "<button class=\"ds-btn-primary\">Save changes</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; height: 2.375rem; padding: 0 0.9375rem; border: none; border-radius: 0.6875rem; background: var(--color-primary, #0c0c0e); color: var(--color-primary-foreground, #f7f6f3); font-family: Geist, system-ui, -apple-system, sans-serif; font-size: 0.8125rem; font-weight: 600; line-height: 1; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); cursor: pointer; transition: opacity 200ms, transform 200ms; } .ds-btn-primary:hover { opacity: 0.9; } .ds-btn-primary:active { transform: scale(0.98); } .ds-btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--color-background, #f8f8f6), 0 0 0 4px var(--color-ring, #13724d); }"
     },
     {
       "name": "Outline Button",
       "kind": "button",
       "refersTo": "button-outline",
-      "description": "The default secondary action across the dashboard. Flat, hairline stroke, fills with Wash on hover.",
-      "html": "<button class=\"ds-btn-outline\">Scan receipt</button>",
-      "css": ".ds-btn-outline { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; height: 2.5rem; padding: 0 1rem; border: 1px solid var(--color-input); border-radius: 0.5rem; background: var(--color-background); color: var(--color-foreground); font-size: 0.875rem; font-weight: 500; line-height: 1; cursor: pointer; transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-btn-outline:hover { background: var(--color-accent); color: var(--color-accent-foreground); } .ds-btn-outline:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--color-background), 0 0 0 4px var(--color-ring); } .ds-btn-outline:active { transform: scale(0.98); }"
+      "description": "The default choice for secondary actions across the dashboard. Flat at rest — outline and ghost buttons never take the control shadow.",
+      "html": "<button class=\"ds-btn-outline\">Export CSV</button>",
+      "css": ".ds-btn-outline { display: inline-flex; align-items: center; justify-content: center; height: 2.375rem; padding: 0 0.9375rem; border: 1px solid var(--color-border, #e3e2de); border-radius: 0.6875rem; background: var(--color-card, #ffffff); color: var(--color-foreground, #0c0c0e); font-family: Geist, system-ui, -apple-system, sans-serif; font-size: 0.8125rem; font-weight: 500; line-height: 1; cursor: pointer; transition: background 200ms, border-color 200ms, transform 200ms; } .ds-btn-outline:hover { background: var(--color-muted, #efeeeb); border-color: var(--color-muted-foreground, #67676f); } .ds-btn-outline:active { transform: scale(0.98); } .ds-btn-outline:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--color-background, #f8f8f6), 0 0 0 4px var(--color-ring, #13724d); }"
     },
     {
-      "name": "Input Field",
+      "name": "Entry Input",
       "kind": "input",
-      "refersTo": "input-field",
-      "description": "Quiet at rest, soft halo in focus. Entry paths use the 2.75rem variant instead.",
-      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">Amount</span><input class=\"ds-input\" type=\"text\" inputmode=\"decimal\" placeholder=\"0.00\" /></label>",
-      "css": ".ds-field { display: flex; flex-direction: column; gap: 0.375rem; } .ds-field-label { font-size: 0.75rem; font-weight: 500; line-height: 1; color: var(--color-muted-foreground); } .ds-input { display: flex; width: 100%; height: 2.5rem; padding: 0.5rem 0.75rem; border: 1px solid var(--color-input); border-radius: 0.5rem; background: var(--color-background); color: var(--color-foreground); font-size: 0.875rem; transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-input::placeholder { color: var(--color-muted-foreground); } .ds-input:hover { border-color: color-mix(in srgb, var(--color-foreground) 20%, transparent); } .ds-input:focus-visible { outline: none; border-color: var(--color-ring); box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-ring) 20%, transparent); } .ds-input:disabled { opacity: 0.5; cursor: not-allowed; }"
-    },
-    {
-      "name": "Select Trigger",
-      "kind": "input",
-      "refersTo": "input-field",
-      "description": "Matches the input exactly, plus a Graphite chevron at the right edge.",
-      "html": "<button class=\"ds-select\"><span>Giving</span><svg class=\"ds-select-chevron\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m6 9 6 6 6-6\"/></svg></button>",
-      "css": ".ds-select { display: flex; width: 100%; height: 2.5rem; align-items: center; justify-content: space-between; padding: 0.5rem 0.75rem; border: 1px solid var(--color-input); border-radius: 0.5rem; background: var(--color-background); color: var(--color-foreground); font-size: 0.875rem; cursor: pointer; transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-select-chevron { width: 1rem; height: 1rem; margin-left: 0.5rem; flex-shrink: 0; color: var(--color-muted-foreground); } .ds-select:hover { border-color: color-mix(in srgb, var(--color-foreground) 20%, transparent); } .ds-select:focus-visible { outline: none; border-color: var(--color-ring); box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-ring) 20%, transparent); }"
+      "refersTo": "input-field-entry",
+      "description": "2.75rem on every transaction-entry path, per the Thumb Row Rule. Sunken rather than raised: a field is a hole in the card, not a tile on it.",
+      "html": "<input class=\"ds-input-entry\" type=\"text\" placeholder=\"0.00\" aria-label=\"Amount\" />",
+      "css": ".ds-input-entry { display: flex; width: 100%; height: 2.75rem; padding: 0.5rem 0.875rem; border: 1px solid var(--color-border, #e3e2de); border-radius: 0.6875rem; background: var(--color-sunken, #f4f3f1); color: var(--color-foreground, #0c0c0e); font-family: Geist, system-ui, -apple-system, sans-serif; font-size: 0.875rem; line-height: 1.5; transition: border-color 200ms, box-shadow 200ms; } .ds-input-entry::placeholder { color: var(--color-muted-foreground, #67676f); } .ds-input-entry:hover { border-color: color-mix(in srgb, var(--color-foreground, #0c0c0e) 20%, transparent); } .ds-input-entry:focus-visible { outline: none; border-color: var(--color-ring, #13724d); box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-ring, #13724d) 25%, transparent); }"
     },
     {
       "name": "Card Surface",
       "kind": "card",
       "refersTo": "card-surface",
-      "description": "The universal container. Defined by its hairline border, not its shadow.",
-      "html": "<div class=\"ds-card\"><div class=\"ds-card-header\"><h3 class=\"ds-card-title\">This month</h3><p class=\"ds-card-desc\">1 – 31 August</p></div><div class=\"ds-card-body\">Content sits here at 1.5rem padding.</div></div>",
-      "css": ".ds-card { border: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent); border-radius: 1rem; background: var(--color-card); color: var(--color-card-foreground); box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.02); } .ds-card-header { display: flex; flex-direction: column; gap: 0.375rem; padding: 1.5rem; } .ds-card-title { margin: 0; font-size: 1.125rem; font-weight: 600; line-height: 1; letter-spacing: -0.025em; } .ds-card-desc { margin: 0; font-size: 0.875rem; color: var(--color-muted-foreground); } .ds-card-body { padding: 0 1.5rem 1.5rem; font-size: 0.875rem; }"
+      "description": "The system's container. No shadow at all — a 70%-opacity hairline plus the value step against the ground is what makes it read as raised.",
+      "html": "<div class=\"ds-card\"><p class=\"ds-card-title\">This month</p><p class=\"ds-card-body\">Every card carries a hairline and no shadow. Depth here is tonal, not cast.</p></div>",
+      "css": ".ds-card { border: 1px solid color-mix(in srgb, var(--color-border, #e3e2de) 70%, transparent); border-radius: 1.125rem; background: var(--color-card, #ffffff); padding: 1.5rem; } .ds-card-title { margin: 0 0 0.375rem; font-family: 'Bricolage Grotesque', Geist, system-ui, sans-serif; font-size: 1rem; font-weight: 600; line-height: 1; letter-spacing: -0.015em; color: var(--color-foreground, #0c0c0e); } .ds-card-body { margin: 0; font-family: Geist, system-ui, -apple-system, sans-serif; font-size: 0.875rem; line-height: 1.5; color: var(--color-muted-foreground, #67676f); }"
     },
     {
-      "name": "Nav Item",
+      "name": "Nav Item with Count Badge",
       "kind": "nav",
       "refersTo": "nav-item-active",
-      "description": "Filled-pill active state, never an underline. Graphite at rest, Ink when active.",
-      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-item ds-nav-item--active\" href=\"#\"><svg class=\"ds-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect width=\"7\" height=\"9\" x=\"3\" y=\"3\" rx=\"1\"/><rect width=\"7\" height=\"5\" x=\"14\" y=\"3\" rx=\"1\"/><rect width=\"7\" height=\"9\" x=\"14\" y=\"12\" rx=\"1\"/><rect width=\"7\" height=\"5\" x=\"3\" y=\"16\" rx=\"1\"/></svg>Dashboard</a><a class=\"ds-nav-item\" href=\"#\"><svg class=\"ds-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m16 3 4 4-4 4\"/><path d=\"M20 7H4\"/><path d=\"m8 21-4-4 4-4\"/><path d=\"M4 17h16\"/></svg>Transactions</a></nav>",
-      "css": ".ds-nav { display: flex; align-items: center; gap: 0.25rem; } .ds-nav-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; line-height: 1; text-decoration: none; color: var(--color-muted-foreground); transition: background-color 200ms cubic-bezier(0.4, 0, 0.2, 1), color 200ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-nav-item .ds-icon { width: 1rem; height: 1rem; } .ds-nav-item:hover { background: color-mix(in srgb, var(--color-accent) 50%, transparent); color: var(--color-foreground); } .ds-nav-item--active { background: var(--color-accent); color: var(--color-foreground); } .ds-nav-item:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--color-ring); }"
+      "description": "A sidebar destination. The active state is a filled pill, never an underline. The amber count is a number of money events falling due, which is what keeps it inside the Earned Ink Rule.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-item ds-nav-item--active\" href=\"#\" aria-current=\"page\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m17 2 4 4-4 4\"/><path d=\"M3 11v-1a4 4 0 0 1 4-4h14\"/><path d=\"m7 22-4-4 4-4\"/><path d=\"M21 13v1a4 4 0 0 1-4 4H3\"/></svg><span>Outgoings</span><span class=\"ds-nav-badge\">3<span class=\"ds-sr\">&nbsp;due or overdue</span></span></a><a class=\"ds-nav-item\" href=\"#\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m17 2 4 4-4 4\"/><path d=\"M3 11v-1a4 4 0 0 1 4-4h14\"/><path d=\"m7 22-4-4 4-4\"/><path d=\"M21 13v1a4 4 0 0 1-4 4H3\"/></svg><span>Investments</span></a></nav>",
+      "css": ".ds-nav { display: flex; flex-direction: column; gap: 0.125rem; width: 15.5rem; } .ds-nav-item { display: flex; align-items: center; gap: 0.6875rem; height: 2.375rem; padding: 0 0.625rem; border-radius: 0.625rem; color: var(--color-muted-foreground, #67676f); font-family: Geist, system-ui, -apple-system, sans-serif; font-size: 0.84375rem; font-weight: 500; text-decoration: none; transition: background 200ms, color 200ms; } .ds-nav-item:hover { background: color-mix(in srgb, var(--color-muted, #efeeeb) 60%, transparent); color: var(--color-foreground, #0c0c0e); } .ds-nav-item--active { background: var(--color-muted, #efeeeb); color: var(--color-foreground, #0c0c0e); } .ds-nav-badge { margin-left: auto; border-radius: 0.375rem; background: var(--color-obligation-surface, #fffbeb); padding: 0.125rem 0.375rem; color: var(--color-obligation, #b75000); font-size: 0.6875rem; font-weight: 600; font-variant-numeric: tabular-nums; } .ds-nav-badge { position: relative; } .ds-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }"
+    },
+    {
+      "name": "Status Pill",
+      "kind": "chip",
+      "refersTo": "pill-status",
+      "description": "States a condition in words and stays deliberately neutral. Often the only thing distinguishing an amber unrecovered figure from a healthy one, which WCAG 1.4.1 does not allow to be a hue.",
+      "html": "<span class=\"ds-pill\">At cost</span> <span class=\"ds-pill\">Pending viewer invitation</span>",
+      "css": ".ds-pill { display: inline-flex; align-items: center; border-radius: 9999px; background: var(--color-muted, #efeeeb); padding: 0.125rem 0.5rem; color: var(--color-muted-foreground, #67676f); font-family: Geist, system-ui, -apple-system, sans-serif; font-size: 0.6875rem; font-weight: 500; }"
+    },
+    {
+      "name": "Stat Tile",
+      "kind": "card",
+      "refersTo": "stat-tile",
+      "description": "A label over one figure, at the tile radius rather than the card radius. The figure takes a money token when it is classified and neutral Ink when it is not.",
+      "html": "<div class=\"ds-stat\"><p class=\"ds-stat-label\">Giving</p><p class=\"ds-stat-value ds-stat-value--giving\">£1,240.00</p><p class=\"ds-stat-note\">8 gifts this month</p></div>",
+      "css": ".ds-stat { border: 1px solid color-mix(in srgb, var(--color-border, #e3e2de) 70%, transparent); border-radius: 1rem; background: var(--color-card, #ffffff); padding: 1.125rem; } .ds-stat-label { margin: 0; font-family: Geist, system-ui, -apple-system, sans-serif; font-size: 0.75rem; color: var(--color-muted-foreground, #67676f); } .ds-stat-value { margin: 0.375rem 0 0; font-family: 'Bricolage Grotesque', Geist, system-ui, sans-serif; font-size: 1.625rem; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: var(--color-foreground, #0c0c0e); } .ds-stat-value--giving { color: var(--color-giving, #007956); } .ds-stat-note { margin: 0.125rem 0 0; font-family: Geist, system-ui, -apple-system, sans-serif; font-size: 0.75rem; font-weight: 500; color: var(--color-muted-foreground, #67676f); font-variant-numeric: tabular-nums; }"
     },
     {
       "name": "Transaction Type Tile",
       "kind": "custom",
-      "refersTo": "type-tile-giving",
-      "description": "The signature element and the semantic backbone: tinted 12px square, directional glyph, one per money type. Colour is always paired with a distinct glyph.",
-      "html": "<div class=\"ds-types\"><div class=\"ds-type ds-type--income\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"22 7 13.5 15.5 8.5 10.5 2 17\"/><polyline points=\"16 7 22 7 22 13\"/></svg></div><div class=\"ds-type ds-type--expense\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m7 7 10 10\"/><path d=\"M17 7v10H7\"/></svg></div><div class=\"ds-type ds-type--giving\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 7h10v10\"/><path d=\"M7 17 17 7\"/></svg></div></div>",
-      "css": ".ds-types { display: flex; gap: 0.75rem; } .ds-type { display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; border-radius: 0.75rem; } .ds-type svg { width: 1rem; height: 1rem; } .ds-type--income { background: var(--color-income-surface); color: var(--color-income); } .ds-type--expense { background: var(--color-expense-surface); color: var(--color-expense); } .ds-type--giving { background: var(--color-giving-surface); color: var(--color-giving); }"
-    },
-    {
-      "name": "Stat Card",
-      "kind": "card",
-      "refersTo": "card-surface",
-      "description": "The dashboard's opening row. Graphite label, semantic icon, tabular figure in the colour of what it measures.",
-      "html": "<div class=\"ds-stat\"><div class=\"ds-stat-top\"><span class=\"ds-stat-label\">Giving</span><svg class=\"ds-stat-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 7h10v10\"/><path d=\"M7 17 17 7\"/></svg></div><div class=\"ds-stat-value\">£1,240.00</div><p class=\"ds-stat-meta\">This month</p></div>",
-      "css": ".ds-stat { border: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent); border-radius: 1rem; background: var(--color-card); box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.02); padding: 1rem; min-width: 11rem; } .ds-stat-top { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; } .ds-stat-label { font-size: 0.75rem; font-weight: 500; color: var(--color-muted-foreground); } .ds-stat-icon { width: 1rem; height: 1rem; color: var(--color-giving); } .ds-stat-value { margin-top: 0.5rem; font-size: 1.5rem; font-weight: 600; line-height: 1.2; font-variant-numeric: tabular-nums; color: var(--color-giving); } .ds-stat-meta { margin: 0.25rem 0 0; font-size: 0.75rem; color: var(--color-muted-foreground); }"
+      "refersTo": "type-tile-income",
+      "description": "The system's semantic backbone: a rounded square holding a directional arrow, tinted by money type. Colour is always paired with a distinct glyph — that pairing is the accessibility contract.",
+      "html": "<div class=\"ds-types\"><span class=\"ds-type ds-type--income\" title=\"Income\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 7h10v10\"/><path d=\"M7 17 17 7\"/></svg></span><span class=\"ds-type ds-type--expense\" title=\"Expense\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m7 7 10 10\"/><path d=\"M17 7v10H7\"/></svg></span><span class=\"ds-type ds-type--giving\" title=\"Giving\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 7h10v10\"/><path d=\"M7 17 17 7\"/></svg></span></div>",
+      "css": ".ds-types { display: flex; gap: 0.5rem; } .ds-type { display: inline-flex; align-items: center; justify-content: center; width: 1.75rem; height: 1.75rem; border-radius: 0.5625rem; } .ds-type--income { background: var(--color-income-surface, #eff6ff); color: var(--color-income, #1447e6); } .ds-type--expense { background: var(--color-expense-surface, #fff1f2); color: var(--color-expense, #c20039); } .ds-type--giving { background: var(--color-giving-surface, #ecfdf5); color: var(--color-giving, #007956); }"
     },
     {
       "name": "Budget Progress Bar",
       "kind": "custom",
-      "refersTo": "card-surface",
-      "description": "Pill track in Wash with a 500ms fill, the system's only expressive duration. The percentage label is required, not decorative.",
-      "html": "<div class=\"ds-progress-row\"><div class=\"ds-progress-head\"><span class=\"ds-progress-name\">Food &amp; Dining</span><span class=\"ds-progress-figures\">£320.00 / £500.00</span></div><div class=\"ds-progress-track\"><div class=\"ds-progress-fill\" style=\"width: 64%\"></div></div><div class=\"ds-progress-foot\">64% used · £180.00 left</div></div>",
-      "css": ".ds-progress-row { display: flex; flex-direction: column; gap: 0.5rem; max-width: 22rem; } .ds-progress-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; } .ds-progress-name { font-size: 0.875rem; font-weight: 500; color: var(--color-foreground); } .ds-progress-figures { font-size: 0.875rem; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--color-foreground); } .ds-progress-track { height: 0.5rem; border-radius: 9999px; background: var(--color-muted); overflow: hidden; } .ds-progress-fill { height: 100%; border-radius: 9999px; background: var(--color-foreground); transition: width 500ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-progress-foot { font-size: 0.75rem; font-variant-numeric: tabular-nums; color: var(--color-muted-foreground); }"
+      "description": "A pill track whose fill animates over 500ms — the slowest motion in the system. Neutral ink on track, amber near the limit, rose over it; never green, because staying under budget is not giving. The percentage and the words beneath it are required, not decorative.",
+      "html": "<div class=\"ds-budget\"><div class=\"ds-budget-head\"><span>Food &amp; Dining</span><span class=\"ds-budget-pct\">82%</span></div><div class=\"ds-budget-track\" role=\"progressbar\" aria-valuenow=\"82\" aria-valuemin=\"0\" aria-valuemax=\"100\"><div class=\"ds-budget-fill\"></div></div><p class=\"ds-budget-note\">£54.00 remaining of £300.00</p></div>",
+      "css": ".ds-budget { font-family: Geist, system-ui, -apple-system, sans-serif; max-width: 22rem; } .ds-budget-head { display: flex; justify-content: space-between; font-size: 0.8125rem; font-weight: 500; color: var(--color-foreground, #0c0c0e); margin-bottom: 0.5rem; } .ds-budget-pct { font-variant-numeric: tabular-nums; color: var(--color-muted-foreground, #67676f); } .ds-budget-track { height: 0.5rem; border-radius: 9999px; background: var(--color-track, #e5e4e1); overflow: hidden; } .ds-budget-fill { width: 82%; height: 100%; border-radius: 9999px; background: var(--color-obligation, #b75000); transition: width 500ms ease-out; } .ds-budget-note { margin: 0.5rem 0 0; font-size: 0.75rem; color: var(--color-muted-foreground, #67676f); font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Calendar Event Chip",
+      "kind": "custom",
+      "description": "The densest use of the money palette: an expected movement placed on the day it lands. Surface tint, solid dot, and the amount in the same token's ink. Hover shifts brightness rather than fill, because the fill is already carrying meaning.",
+      "html": "<div class=\"ds-cal\"><a class=\"ds-cal-event ds-cal-event--obligation\" href=\"#\"><span class=\"ds-cal-row\"><span class=\"ds-cal-dot\"></span><span class=\"ds-cal-title\">Barclaycard minimum</span></span><span class=\"ds-cal-amount\">£85.00</span></a><a class=\"ds-cal-event ds-cal-event--income\" href=\"#\"><span class=\"ds-cal-row\"><span class=\"ds-cal-dot\"></span><span class=\"ds-cal-title\">Salary</span><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"m9 12 2 2 4-4\"/></svg></span><span class=\"ds-cal-amount\">£2,400.00</span></a></div>",
+      "css": ".ds-cal { display: flex; flex-direction: column; gap: 0.25rem; width: 12rem; font-family: Geist, system-ui, -apple-system, sans-serif; } .ds-cal-event { display: block; border-radius: 0.5rem; padding: 0.5rem; text-decoration: none; transition: filter 200ms; } .ds-cal-event:hover { filter: brightness(0.95); } .ds-cal-row { display: flex; align-items: center; gap: 0.5rem; } .ds-cal-dot { width: 0.375rem; height: 0.375rem; border-radius: 9999px; background: currentColor; flex: none; } .ds-cal-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.6875rem; font-weight: 500; color: var(--color-foreground, #0c0c0e); } .ds-cal-amount { display: block; margin-top: 0.125rem; padding-left: 0.875rem; font-size: 0.625rem; font-weight: 600; font-variant-numeric: tabular-nums; color: currentColor; } .ds-cal-event--obligation { background: var(--color-obligation-surface, #fffbeb); color: var(--color-obligation, #b75000); } .ds-cal-event--income { background: var(--color-income-surface, #eff6ff); color: var(--color-income, #1447e6); }"
     }
   ],
   "narrative": {
     "northStar": "The Quiet Ledger",
-    "overview": "Sika looks like a well-kept book of accounts, not a trading terminal. The page is near-white paper. Structure comes from hairline borders, not from shadows or filled panels. Chrome recedes — the navigation is a translucent blur, cards are almost borderless, buttons are modest — so that the only things with real presence on screen are the numbers and the four colors that tell you what kind of money you are looking at.\n\nThe system's discipline is restraint with one licensed exception. Everything neutral is genuinely neutral: greys at 4–6% saturation, type at two weights, surfaces flat at rest. Against that, four saturated hues carry the entire semantic load — inflow, outflow, giving, obligation — and they appear nowhere else. A colored pixel in Sika means money changed meaning. That is what makes the ledger quiet: not that it is grey, but that its color is never spent on decoration.\n\nDensity is comfortable rather than compressed. Cards breathe at 24px, sections at 24px, and entry controls grow to 44px on the paths where a thumb does the work. Nothing is crowded, nothing is precious. The register is trustworthy and unhurried — a record you can sit with for three years — and it explicitly rejects both the dark glassmorphic crypto-terminal look and the gamified budgeting app with streaks, confetti, mascots, and emoji-as-interface.",
+    "overview": "Sika looks like a well-kept book of accounts, not a trading terminal. The page is a near-black canvas by default, with a warm paper counterpart in light mode. Structure comes from hairline borders, not from shadows or filled panels. Chrome recedes — the navigation is a translucent blur, cards are almost borderless, buttons are modest — so that the only things with real presence on screen are the numbers and the four colors that tell you what kind of money you are looking at.\n\nThe system's discipline is restraint with one licensed exception. Everything neutral is genuinely neutral: greys at 4–6% saturation, type at two weights, surfaces flat at rest. Against that, four saturated hues carry the entire semantic load — inflow, outflow, giving, obligation — and they appear nowhere else. A colored pixel in Sika means money changed meaning. That is what makes the ledger quiet: not that it is grey, but that its color is never spent on decoration.\n\nDensity is comfortable rather than compressed. Cards breathe at 24px, sections at 24px, and entry controls grow to 44px on the paths where a thumb does the work. Nothing is crowded, nothing is precious. The register is *trustworthy and unhurried* — a record you can sit with for three years — and it explicitly rejects both the dark glassmorphic crypto-terminal look and the gamified budgeting app with streaks, confetti, mascots, and emoji-as-interface.",
     "keyCharacteristics": [
-      "Paper-white ground (hsl(0 0% 99%)), never pure white, with pure-white cards floating a shade above it",
+      "Near-black ground (`{colors.dark-background}`) with cards a shade lighter above it, and wells a shade darker below; light mode is the warm-paper counterpart",
       "Hairline borders at fractional opacity doing all the separation work",
       "Four semantic finance hues, used exclusively for financial meaning",
       "Tabular figures on every comparable number",
-      "Radius that scales with surface size: 8px controls → 12px tiles → 16px surfaces",
+      "Radius that scales with surface size: 11px controls → 16px tiles → 18px surfaces → 20px heroes",
       "Shadows reserved for things that genuinely float; flat everywhere else",
       "Full light/dark parity via a single class-scoped token override"
     ],
@@ -330,17 +567,32 @@
       },
       {
         "name": "The Chrome-and-Amount Rule",
-        "body": "Signal Blue is for things you click. Inflow Blue is for money that arrived. Never apply Signal Blue to a figure, and never apply Inflow Blue to a button, link, or focus ring — they are close enough in hue that the only thing keeping them legible is the discipline of never mixing their jobs.",
+        "body": "Chrome is for things you click; a money token is for an amount. Never colour a figure with a chrome token, and never apply Inflow Blue to a button, link, or focus ring.",
+        "section": "colors"
+      },
+      {
+        "name": "The Token-Or-Nothing Rule",
+        "body": "A money type is coloured with its token — `text-income`, `bg-expense-surface` — and never with a raw palette class. `text-emerald-600` in a component is a bug even when it looks right: it has no dark-mode value, it is not contrast-checked, and it detaches the colour from the meaning. Raw palette steps remain fine for things that are not money: a status tick, a decorative accent.",
+        "section": "colors"
+      },
+      {
+        "name": "The Single-Type Chart Rule",
+        "body": "A breakdown of one money type uses a tonal ramp of that same type. An expense category may be a lighter or darker Outflow Rose; it may never turn Income Blue, Giving Green, or Obligation Amber merely to make the slices different.",
         "section": "colors"
       },
       {
         "name": "The Giving-Is-Not-Green-Money Rule",
-        "body": "Giving Green marks giving specifically, not 'positive' generally. Income is blue. Do not let a chart, a badge, or a summary card recruit Giving Green to mean 'good' or 'up' — it collapses the distinction the product exists to make.",
+        "body": "Giving Green marks giving specifically, not \"positive\" generally. Income is blue. Do not let a chart, a badge, or a summary card recruit Giving Green to mean \"good\" or \"up\" — it collapses the distinction the product exists to make.",
+        "section": "colors"
+      },
+      {
+        "name": "The Mint-Is-Chrome Rule",
+        "body": "Sika Mint (`{colors.brand}` / `{colors.dark-brand}`) is non-money chrome: the workspace chip, the focus ring, the selection highlight, and a marketing kicker. It is adjacent in hue to Giving Green, so the line has to be absolute — Mint never colours a figure, a badge on an amount, a chart series, or a table cell. If a mint pixel sits next to a number, it is a bug.",
         "section": "colors"
       },
       {
         "name": "The Tabular Rule",
-        "body": "Any number a user could compare against another number vertically uses tabular figures. Currency amounts, balances, percentages, and totals are never proportional.",
+        "body": "Any number a user could compare against another number vertically uses tabular figures (`tabular-nums`). Currency amounts, balances, percentages, and totals are never proportional. This is already true in 19 components; it is not optional in new ones.",
         "section": "typography"
       },
       {
@@ -350,62 +602,54 @@
       },
       {
         "name": "The Thumb Row Rule",
-        "body": "Every control on a transaction-entry path — quick add, the transaction form, onboarding — is 2.75rem tall, not the default 2.5rem. Entry happens one-handed on a phone, and the record's accuracy depends on entry never being fiddly.",
+        "body": "Every control on a transaction-entry path — quick add, the transaction form, onboarding — is 2.75rem tall, not the 2.375rem default. Entry happens one-handed on a phone, and the record's accuracy depends on entry never being fiddly.",
         "section": "layout"
       },
       {
         "name": "The Two-Up Ceiling Rule",
-        "body": "Dashboard panels go at most two across. A third column shrinks financial figures below comfortable reading size and has never earned its place.",
+        "body": "Dashboard *panels* go at most two across — a panel being anything with a heading and its own internal structure. A third column shrinks financial figures below comfortable reading size and has never earned its place.",
         "section": "layout"
       },
       {
         "name": "The Hairline Rule",
-        "body": "Separation is a border, not a shadow. When two surfaces need to be distinguished, reach for border-border/50 or a tonal step before reaching for elevation.",
-        "section": "elevation"
+        "body": "Separation is a border, not a shadow. When two surfaces need to be distinguished, reach for `border-border/60` or a tonal step before reaching for elevation.",
+        "section": "elevation-depth"
       },
       {
         "name": "The Float-Or-Flat Rule",
         "body": "An element either sits on the page (flat, hairline, tonal) or floats above it (modal/transient shadow, plus scrim or blur). There is no middle tier, and hover does not promote a surface between the two.",
-        "section": "elevation"
+        "section": "elevation-depth"
       },
       {
         "name": "The Radius-Scales-With-Surface Rule",
-        "body": "8px for things you click, 12px for things that hold an icon, 16px for things that hold content. A 16px-radius button or an 8px-radius card is out of system.",
+        "body": "Corner softening scales with the surface: ~11px for things you click, ~16px for things that hold an icon or a single figure, 18px for things that hold content, 20px for a hero slab. A hero-radius button or a control-radius card is out of system. The exact steps are in Shapes; this rule is the ordering they must keep.",
         "section": "shapes"
-      },
-      {
-        "name": "The Token-Or-Nothing Rule",
-        "body": "A money type is coloured with its token — text-income, bg-expense-surface — and never with a raw palette class. text-emerald-600 in a component is a bug even when it looks right: it has no dark-mode value, it is not contrast-checked, and it detaches the colour from the meaning. Raw palette steps remain fine for things that are not money.",
-        "section": "colors"
-      },
-      {
-        "name": "The Single-Type Chart Rule",
-        "body": "A breakdown of one money type uses a tonal ramp of that same type. An expense category may be a lighter or darker Outflow Rose; it may never turn Income Blue, Giving Green, or Obligation Amber merely to make the slices different.",
-        "section": "colors"
       }
     ],
     "dos": [
-      "Do put new tokens in the @theme block of app/globals.css, and add the matching .dark override in the same commit. That block is the only live source of truth.",
-      "Do pair every semantic color with a glyph, a label, or a sign. Financial state is never conveyed by hue alone (WCAG 1.4.1). Every budget bar, status badge, and net-worth figure states its condition in words as well as colour.",
-      "Do use tabular-nums on every currency figure, percentage, and total.",
-      "Do size transaction-entry controls at 2.75rem, per the Thumb Row Rule.",
-      "Do separate surfaces with a translucent hairline (border-border/50) before considering a shadow.",
-      "Do keep the semantic four bound to their meanings in charts and exports, not just in the UI. Multi-series charts use one token per money type; single-type breakdowns use a tonal ramp of that same type.",
-      "Do colour money with its token (text-giving, bg-expense-surface). The token is contrast-checked and theme-aware; a palette step is neither.",
-      "Do keep @custom-variant dark (&:where(.dark, .dark *)) at the top of globals.css. Tailwind v4 otherwise compiles every dark: utility into @media (prefers-color-scheme: dark), which silently ignores the in-app theme toggle."
+      "**Do** put new tokens in the `@theme` block of `app/globals.css`, and add the matching `.dark` override in the same commit. That block is the only live source of truth.",
+      "**Do** colour money with its token (`text-giving`, `bg-expense-surface`), per the Token-Or-Nothing Rule. The token is contrast-checked and theme-aware; a palette step is neither.",
+      "**Do** keep `@custom-variant dark (&:where(.dark, .dark *))` at the top of `globals.css`. Tailwind v4 otherwise compiles every `dark:` utility into `@media (prefers-color-scheme: dark)`, which silently ignores the in-app theme toggle.",
+      "**Do** pair every semantic color with a glyph, a label, or a sign. Financial state is never conveyed by hue alone (WCAG 1.4.1). Every budget bar, status badge, and net-worth figure states its condition in words as well as colour.",
+      "**Do** use `tabular-nums` on every currency figure, percentage, and total.",
+      "**Do** size transaction-entry controls at 2.75rem, per the Thumb Row Rule.",
+      "**Do** separate surfaces with a translucent hairline (`border-border/50`) before considering a shadow.",
+      "**Do** keep the semantic four bound to their meanings in charts and exports, not just in the UI. Multi-series charts use one token per money type; single-type breakdowns use a tonal ramp of that same type.",
+      "**Do** reach for the shared shapes in `components/dashboard/panel.tsx` — `StatTile`, `SectionHeading`, `EmptyState` — instead of re-deriving them. They were extracted because seven files held literal copies, which is how a padding change reaches six of them and misses the seventh."
     ],
     "donts": [
-      "Don't reintroduce a tailwind.config.js/ts. This project is CSS-first Tailwind v4: there is no @config directive, so a JS config would never load. The previous one was deleted for exactly this reason — it had been silently inert, and its hsl(var(--border)) values pointed at variables that never existed.",
-      "Don't reference --radius. It is declared and unused; corner values come from the Shapes scale.",
-      "Don't apply Signal Blue to a number or Inflow Blue to a control.",
-      "Don't use Giving Green as a generic 'positive' or 'up' color.",
-      "Don't introduce a second typeface, a third text weight beyond 400/500/600, or a monospace face for figures — tabular numerals already solve alignment.",
-      "Don't add @import url(...) for fonts or any other remote asset in globals.css. Every external request contradicts the product's zero-third-party default. A Google Fonts import lived here and was removed; self-host through next/font instead.",
-      "Don't add shadow tiers between flat and floating, and don't promote a card on hover. Hover changes fill or border, never elevation.",
-      "Don't reach for gradients, glassmorphism, neon accents, confetti, streak counters, mascots, or emoji as interface elements. The rejected references are the crypto terminal and the gamified budgeting app.",
-      "Don't exceed two dashboard panels across.",
-      "Don't rebuild interactive primitives by hand. Radix supplies the semantics; restyle the existing wrapper in components/ui/ instead.",
-      "Don't write text-rose-600 dark:text-rose-400 for a money type. That pair is what the tokens replaced; half of its occurrences had lost their dark half."
+      "**Don't** reintroduce a `tailwind.config.{js,ts}`. This project is CSS-first Tailwind v4: there is no `@config` directive, so a JS config would never load. The previous one was deleted for exactly this reason — it had been silently inert, and its `hsl(var(--border))` values pointed at variables that never existed.",
+      "**Don't** reference `--radius`. It is declared and unused; corner values come from the Shapes scale above.",
+      "**Don't** apply Sika Mint to a number, badge, or chart series. See the Mint-Is-Chrome Rule and the tension recorded beneath it.",
+      "**Don't** write `text-rose-600 dark:text-rose-400` for a money type. That pair is what the tokens replaced; half of its occurrences had lost their dark half.",
+      "**Don't** use Giving Green as a generic \"positive\" or \"up\" color. Gains, repayments, paid bills and under-budget states are neutral ink.",
+      "**Don't** set prose, labels, controls, or table body text in the display face, and don't add a third family, a third text weight beyond 400/500/600, or a monospace face for figures — tabular numerals already solve alignment.",
+      "**Don't** add `@import url(...)` for fonts or any other remote asset in `globals.css`. Every external request contradicts the product's zero-third-party default. A Google Fonts import lived here and was removed; self-host through `next/font` instead.",
+      "**Don't** add shadow tiers between flat and floating, and don't promote a card on hover. Hover changes fill or border, never elevation.",
+      "**Don't** reach for gradients, glassmorphism, neon accents, confetti, streak counters, mascots, or emoji as interface elements. The rejected references are the crypto terminal and the gamified budgeting app.",
+      "**Don't** exceed two dashboard panels across.",
+      "**Don't** rebuild interactive primitives by hand. Radix supplies the semantics; restyle the existing wrapper in `components/ui/` instead.",
+      "**Don't** paste a scaffold component in unmodified. A stock shadcn default arrives at a 0.5rem radius on `bg-background`, and this system has neither — corners come from the Shapes scale and surfaces are Card or Sunken. The primitives already carrying those defaults are listed under Supporting Primitives as drift, not as precedent."
     ]
   }
 }

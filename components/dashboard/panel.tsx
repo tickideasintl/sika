@@ -35,6 +35,21 @@ export function EmptyState({
 }
 
 /**
+ * The treatment for a figure that navigates to the page it summarises.
+ *
+ * Nothing is added at rest — a stat that looks like a button would put chrome
+ * on the one thing the page exists to show. The affordance arrives on hover as
+ * a Wash fill behind the block and Ink on its label, and on focus as the
+ * system's Mint ring. Per the Float-Or-Flat Rule it never lifts.
+ *
+ * The negative margin is what lets the fill breathe past the text without
+ * moving anything at rest: padding for the hover surface, pulled back out of
+ * the layout it sits in.
+ */
+export const navigableFigure =
+  "-m-2 block rounded-xl p-2 transition-colors hover:bg-secondary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card";
+
+/**
  * A label over one figure. Not a Card: a tile holds a single number, so it
  * takes the tile radius and the tighter padding — see Shapes in DESIGN.md.
  */

@@ -100,11 +100,15 @@ export const navGroups: NavGroup[] = [
   },
 ];
 
+/**
+ * Settings does not hold a thumb slot: it is one tap away in the account menu
+ * that sits in the mobile header, and the fifth slot buys reachability for the
+ * eight destinations that would otherwise have no route below `lg`.
+ */
 export const settingsItem: NavItem = {
   href: "/dashboard/settings",
   icon: Settings,
   label: "Settings",
-  mobileTab: true,
 };
 
 export const allNavItems: NavItem[] = [
@@ -112,5 +116,14 @@ export const allNavItems: NavItem[] = [
   settingsItem,
 ];
 
-/** The five that earn a slot in the mobile tab bar, in nav order. */
+/** The four that earn a slot in the mobile tab bar, in nav order. */
 export const mobileTabItems: NavItem[] = allNavItems.filter((item) => item.mobileTab);
+
+/**
+ * Everything the thumb row cannot hold, kept in the sidebar's own grouping so
+ * the overflow menu reads as the same map rather than a second one. Settings
+ * is appended by the menu itself; it belongs to no group.
+ */
+export const mobileMoreGroups: NavGroup[] = navGroups
+  .map((group) => ({ ...group, items: group.items.filter((item) => !item.mobileTab) }))
+  .filter((group) => group.items.length > 0);

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { cn, formatCurrency } from "@/lib/utils";
 import { moneyTypeTone } from "@/lib/money-type";
 import type { TransactionType } from "@/types";
@@ -21,6 +22,12 @@ interface Tile {
    *  tile can't be coloured without also being classified. */
   type: TransactionType;
   note: string;
+  /**
+   * Where the figure leads. Income and expenses open the register already
+   * filtered to that type; giving opens the giving workspace instead, because
+   * giving is the one money type with somewhere of its own to go.
+   */
+  href: string;
 }
 
 /**
@@ -63,18 +70,21 @@ export function NetPositionHero({
       value: totalIncome,
       type: "income",
       note: periodLabel,
+      href: "/dashboard/transactions?type=income",
     },
     {
       label: "Expenses",
       value: totalExpenses,
       type: "expense",
       note: base > 0 ? `${Math.round(spentPct)}% of income` : "—",
+      href: "/dashboard/transactions?type=expense",
     },
     {
       label: "Giving",
       value: totalGivings,
       type: "giving",
       note: base > 0 ? `${Math.round(givenPct)}% of income` : "—",
+      href: "/dashboard/giving",
     },
   ];
 
@@ -138,12 +148,15 @@ export function NetPositionHero({
 
       <div className="grid gap-2.5 sm:grid-cols-3 lg:grid-cols-1 lg:grid-rows-3">
         {tiles.map((tile) => (
-          <div
+          <Link
             key={tile.label}
-            className="flex items-center justify-between gap-3 rounded-2xl border border-border/70 bg-card p-4 sm:px-[18px]"
+            href={tile.href}
+            className="group flex items-center justify-between gap-3 rounded-2xl border border-border/70 bg-card p-4 transition-colors hover:border-border hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:px-[18px]"
           >
             <div className="min-w-0">
-              <p className="text-xs text-muted-foreground">{tile.label}</p>
+              <p className="text-xs text-muted-foreground transition-colors group-hover:text-foreground">
+                {tile.label}
+              </p>
               <p
                 className={cn(
                   "mt-1 font-display text-[23px] font-semibold tracking-[-0.02em] tabular-nums",
@@ -156,7 +169,7 @@ export function NetPositionHero({
             <span className="flex-none rounded-md bg-secondary px-2 py-1 text-[11.5px] font-medium text-muted-foreground tabular-nums">
               {tile.note}
             </span>
-          </div>
+          </Link>
         ))}
       </div>
     </section>

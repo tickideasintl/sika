@@ -2,15 +2,37 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bell, Search } from "lucide-react";
+import { Bell, MoreHorizontal, Search } from "lucide-react";
 import { SikaLogo } from "@/components/sika-logo";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { mobileTabItems } from "@/components/dashboard/nav-items";
+import {
+  mobileMoreGroups,
+  mobileTabItems,
+  settingsItem,
+} from "@/components/dashboard/nav-items";
 import { useDueOutgoingsCount } from "@/hooks/use-due-outgoings";
 import { WorkspaceSwitcher } from "@/components/dashboard/workspace-switcher";
 import { AccountMenu, type AccountUser } from "@/components/dashboard/account-menu";
 import { useNotifications } from "@/hooks/use-notifications";
+import { usePartyLabels } from "@/hooks/use-party-labels";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+
+/**
+ * Shared by the four tab links and the More trigger so they cannot drift apart.
+ * The focus ring is the system's button treatment — a Mint ring offset against
+ * the bar's own fill — because the slots had none and the browser default is
+ * a 1px near-black outline, invisible on this surface.
+ */
+const slotClasses =
+  "relative flex h-[50px] flex-col items-center justify-center gap-1 rounded-[13px] text-[10.5px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card";
 
 /** Logo, workspace, theme and account — the chrome the sidebar carries on desktop. */
 export function DashboardMobileHeader({ user }: { user: AccountUser }) {
@@ -60,10 +82,23 @@ export function DashboardMobileHeader({ user }: { user: AccountUser }) {
   );
 }
 
-/** Floating five-slot tab bar. Replaces the sidebar below lg. */
+/**
+ * Floating five-slot tab bar. Replaces the sidebar below lg.
+ *
+ * Four destinations plus an overflow menu, rather than five destinations: with
+ * twelve pages in the rail, a fifth link left eight of them with no route at all
+ * below `lg` — Giving, Accounts, Debts, Loans given and Investments were
+ * unreachable on a phone. Settings gave up its slot because the account menu in
+ * the header already reaches it.
+ */
 export function DashboardTabBar() {
   const pathname = usePathname();
   const dueCount = useDueOutgoingsCount();
+  const { data: notifications } = useNotifications();
+  const partyLabels = usePartyLabels();
+
+  const moreItems = [...mobileMoreGroups.flatMap((group) => group.items), settingsItem];
+  const moreActive = moreItems.some((item) => item.href === pathname);
 
   return (
     <nav
@@ -79,7 +114,7 @@ export function DashboardTabBar() {
             href={item.href}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "relative flex h-[50px] flex-col items-center justify-center gap-1 rounded-[13px] text-[10.5px] font-medium transition-colors",
+              slotClasses,
               active
                 ? "bg-secondary text-foreground"
                 : "text-muted-foreground hover:text-foreground"
@@ -96,6 +131,77 @@ export function DashboardTabBar() {
           </Link>
         );
       })}
+
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          className={cn(
+            slotClasses,
+            moreActive
+              ? "bg-secondary text-foreground"
+              : "text-muted-foreground hover:text-foreground"
+          )}
+        >
+          <MoreHorizontal className="size-[19px]" />
+          More
+        </DropdownMenuTrigger>
+        {/* Anchored to the bar, so it opens upward over the content it covers.
+            The cap is Radix's own measurement of the gap between the trigger and
+            the viewport edge, not a fixed height: nine destinations fit a phone
+            outright, and only a short viewport — browser chrome, a keyboard —
+            makes it scroll. */}
+        <DropdownMenuContent
+          side="top"
+          align="end"
+          className="max-h-[var(--radix-dropdown-menu-content-available-height)] w-56 overflow-y-auto"
+        >
+          {mobileMoreGroups.map((group) => (
+            <div key={group.heading ?? "ungrouped"}>
+              {group.heading && (
+                <DropdownMenuLabel className="text-[10.5px] font-semibold uppercase tracking-[0.09em] text-muted-foreground">
+                  {group.heading}
+                </DropdownMenuLabel>
+              )}
+              {group.items.map((item) => {
+                const Icon = item.icon;
+                const active = pathname === item.href;
+                const badge = item.showsNotificationBadge ? notifications?.unread : undefined;
+                return (
+                  <DropdownMenuItem key={item.href} asChild>
+                    <Link
+                      href={item.href}
+                      aria-current={active ? "page" : undefined}
+                      className={cn("gap-2.5", active && "bg-accent text-foreground")}
+                    >
+                      <Icon className="size-4 flex-none" />
+                      {item.usesPartyLabel ? partyLabels.plural : item.label}
+                      {badge != null && badge > 0 && (
+                        <span className="ml-auto rounded-md bg-obligation-surface px-1.5 py-0.5 text-[11px] font-semibold text-obligation tabular-nums">
+                          {badge}
+                          <span className="sr-only"> unread</span>
+                        </span>
+                      )}
+                    </Link>
+                  </DropdownMenuItem>
+                );
+              })}
+              <DropdownMenuSeparator />
+            </div>
+          ))}
+          <DropdownMenuItem asChild>
+            <Link
+              href={settingsItem.href}
+              aria-current={pathname === settingsItem.href ? "page" : undefined}
+              className={cn(
+                "gap-2.5",
+                pathname === settingsItem.href && "bg-accent text-foreground"
+              )}
+            >
+              <settingsItem.icon className="size-4 flex-none" />
+              {settingsItem.label}
+            </Link>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </nav>
   );
 }

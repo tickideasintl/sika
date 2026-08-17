@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useApiQuery } from "@/hooks/use-api";
 import { cn, formatCurrency } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
+import { navigableFigure } from "@/components/dashboard/panel";
 
 interface NetWorthResponse {
   assets: number;
@@ -60,14 +62,37 @@ export function NetWorthOverview() {
     { value: data.liabilities, className: "bg-obligation" },
   ];
 
+  // Each column is the summary of a page, so each one opens it. "Cash & other"
+  // is the only label that does not name its destination, so it carries the
+  // accessible name the visible text cannot.
   const columns = [
-    { label: "Investments", value: data.investmentsValue, tone: "" },
-    { label: "Cash & other", value: cashAndOther, tone: "" },
-    { label: "Loans out", value: data.loansReceivable, tone: "" },
+    {
+      label: "Investments",
+      value: data.investmentsValue,
+      tone: "",
+      href: "/dashboard/investments",
+      title: "Investments",
+    },
+    {
+      label: "Cash & other",
+      value: cashAndOther,
+      tone: "",
+      href: "/dashboard/accounts",
+      title: "Cash and other assets — open Accounts",
+    },
+    {
+      label: "Loans out",
+      value: data.loansReceivable,
+      tone: "",
+      href: "/dashboard/loans",
+      title: "Loans given",
+    },
     {
       label: "Debts owed",
       value: -data.liabilities,
       tone: data.liabilities > 0 ? "text-obligation" : "",
+      href: "/dashboard/debts",
+      title: "Debts",
     },
   ];
 
@@ -114,8 +139,15 @@ export function NetWorthOverview() {
 
           <div className="grid grid-cols-2 gap-x-5 gap-y-4 sm:grid-cols-4">
             {columns.map((col) => (
-              <div key={col.label}>
-                <p className="text-[11.5px] text-muted-foreground">{col.label}</p>
+              <Link
+                key={col.label}
+                href={col.href}
+                aria-label={col.title}
+                className={cn(navigableFigure, "group")}
+              >
+                <p className="text-[11.5px] text-muted-foreground transition-colors group-hover:text-foreground">
+                  {col.label}
+                </p>
                 <p
                   className={cn(
                     "mt-1 text-[15px] font-semibold tabular-nums",
@@ -125,7 +157,7 @@ export function NetWorthOverview() {
                   {col.value < 0 ? "−" : ""}
                   {formatCurrency(Math.abs(col.value))}
                 </p>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

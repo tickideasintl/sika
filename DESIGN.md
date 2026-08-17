@@ -109,7 +109,6 @@ components:
     padding: "0 0.9375rem"
   button-primary-hover:
     backgroundColor: "{colors.primary}"
-    opacity: 0.9
     textColor: "{colors.primary-foreground}"
   button-outline:
     backgroundColor: "{colors.card}"
@@ -148,8 +147,24 @@ components:
     backgroundColor: "{colors.muted}"
     textColor: "{colors.foreground}"
     typography: "{typography.control}"
-    rounded: "{rounded.control}"
-    padding: "0.5rem 0.75rem"
+    rounded: "{rounded.control-compact}"
+    height: "2.375rem"
+    padding: "0 0.625rem"
+  badge-count:
+    backgroundColor: "{colors.obligation-surface}"
+    textColor: "{colors.obligation}"
+    rounded: "0.375rem"
+    padding: "0.125rem 0.375rem"
+  pill-status:
+    backgroundColor: "{colors.muted}"
+    textColor: "{colors.muted-foreground}"
+    rounded: "{rounded.pill}"
+    padding: "0.125rem 0.5rem"
+  stat-tile:
+    backgroundColor: "{colors.card}"
+    textColor: "{colors.foreground}"
+    rounded: "{rounded.tile}"
+    padding: "1.125rem"
   type-tile-income:
     backgroundColor: "{colors.income-surface}"
     textColor: "{colors.income}"
@@ -546,6 +561,34 @@ Modest, confident, and physically responsive — a 200ms transition on everythin
 - **Header:** title and an optional semantic icon on one row, 0.375rem gap to the
   description beneath.
 
+### Panel Primitives
+
+Three shapes recur on almost every page, and they live in
+`components/dashboard/panel.tsx` rather than in each page that needs them. They were
+extracted after seven files carried literal copies, which is how a padding change reaches
+six of them and misses the seventh.
+
+- **Stat tile:** a label over one figure. Not a card — it takes the tile radius
+  (`{rounded.tile}`), 1.125rem padding rising to 1.25rem horizontally at `sm`, a 0.75rem
+  Graphite label, and a 1.625rem display-face figure at -0.02em with tabular numerals. The
+  figure carries a money token when it is classified and neutral Ink when it is not, and
+  an optional 0.75rem note sits beneath it.
+- **Section heading:** a band heading *outside* a card, set to exactly the card title's
+  type (display face, 1rem, weight 600, leading-none, -0.015em) so a section and a card
+  read at the same level. An optional right-aligned aside carries a count or total at
+  0.78125rem Graphite, tabular, baseline-aligned with the heading.
+- **Empty state:** centred, 3rem of vertical air, opening with a 2.75rem Wash-filled
+  rounded square (`1rem` radius) holding a 1.25rem Graphite icon, then a weight-500 title,
+  an optional 0.875rem Graphite line, and an optional single action 1rem below. Every list
+  surface in the app uses it, including error states, where the action is a Retry button.
+- **Navigable figure:** a summary figure that opens the page it summarises — the hero's
+  three money tiles, the four balance-sheet columns under net worth. It adds **nothing at
+  rest**: a stat dressed as a button would put chrome on the one thing the surface exists
+  to show. The affordance is a hover state (Wash at 60% behind the block, and the Graphite
+  label going Ink) and the system's Mint focus ring. Per the Float-Or-Flat Rule it never
+  lifts. The shared class in `panel.tsx` carries a `-m-2 p-2` pair so the hover fill
+  breathes past the text without moving anything at rest.
+
 ### Inputs / Fields
 
 Quiet at rest and unmistakable in focus, with a hover state that exists purely to confirm
@@ -560,29 +603,124 @@ the field is live.
 - **Disabled:** 50% opacity, `not-allowed` cursor.
 - **Labels:** 0.75rem, weight 500, Graphite, 0.375rem above the field.
 - **Select triggers** match inputs exactly, plus a Graphite chevron at the right edge.
+- **Textareas** keep the input's stroke, hover and focus behaviour but sit at a 0.5rem
+  radius on the page ground (`bg-background`) rather than 0.6875rem on Sunken, with 5rem
+  minimum height and 0.625rem vertical padding. The divergence is an unrefreshed scaffold
+  default, not a decision — bring it onto the Sunken ground and the control radius when
+  the file is next touched.
+- **Switches** are a 2.75rem × 1.5rem pill track with a 1.25rem circular thumb that
+  travels 1.25rem. On is the Contrast Slab (`{colors.primary}`), off is the input stroke
+  colour, and the ring is the button-style offset ring rather than the input's soft halo —
+  a switch is something you press, not something you type into.
 
 ### Navigation
 
 A grouped left sidebar at `lg` and up, a floating tab bar below it. Eight destinations in
-one flat bar gave every page equal weight and read as clutter; two named groups turn it
-into two short lists.
+one flat bar gave every page equal weight and read as clutter; two named groups turned it
+into two short lists. The list has since grown to twelve, which is what the groups were
+bought for — a flat bar would have been unreadable at this length.
 
 - **Sidebar:** 15.5rem wide, sticky full-height, closed by a 70%-opacity hairline on the
-  right. Stacks logo → workspace switcher → grouped nav → settings + account footer.
-- **Groups:** *Money in & out* (Transactions, Outgoings, Reports) and *Balance sheet*
-  (Debts, Loans given, Investments). Overview sits above both, ungrouped; Settings sits in
-  the footer. Group headings are 0.65625rem weight-600 uppercase at 0.09em tracking,
-  Graphite.
-- **Items:** 2.375rem tall, 0.84375rem weight-500 with a 1rem leading icon; Graphite at
-  rest, Ink over a Wash fill when active. Active state is a filled pill, never an
-  underline, and carries `aria-current="page"`.
-- **Mobile:** the sidebar is replaced by a compact top row (logo, workspace, theme,
-  account) and a floating five-slot tab bar pinned to the bottom — Overview, Activity,
-  Outgoings, Reports, Settings. The three balance-sheet pages are reachable from Overview
-  rather than the bar, because five is the most a thumb row holds legibly.
+  right. Stacks logo → workspace switcher → grouped nav → settings + account footer. The
+  whole rail scrolls, not only the nav: scrolling the nav alone let a short viewport clip
+  the last destinations while the logo and footer held their space.
+- **Groups:** Overview sits alone and ungrouped at the top. *Money in & out* carries
+  Transactions, Outgoings, Calendar, Notifications, Clients and Giving, with Reports last;
+  *Balance sheet* carries Accounts, Debts, Loans given and Investments. A hairline closes
+  the nav, and below it the footer holds Settings then the account row. Group headings are
+  0.65625rem weight-600 uppercase at 0.09em tracking, Graphite, with 1.375rem between
+  groups and 0.125rem between items.
+- **Items:** 2.375rem tall at the compact control radius (0.625rem), 0.84375rem weight-500
+  with a 1rem leading icon; Graphite at rest, Ink over a Wash fill when active, Wash at 60%
+  on hover. Active state is a filled pill, never an underline, and carries
+  `aria-current="page"`.
+- **Count badges:** two destinations carry a number — Outgoings shows how many are due or
+  overdue, Notifications shows unread items. Both are a right-aligned 0.375rem-radius pill,
+  Obligation Amber ink on its surface tint, 0.6875rem weight-600 and tabular, followed by a
+  visually hidden phrase naming what the number counts. A count of money falling due is a
+  financial state, so the amber is inside the Earned Ink Rule rather than an exception to
+  it; a count of anything else would not be.
+- **One label is not fixed:** the Clients destination reads *Clients* in a business
+  workspace and *People* in a personal one. It is the only nav string that changes, and it
+  changes because the same record means a different thing in each workspace type.
+- **Mobile:** below `lg` the rail is replaced by a compact top row — logo, workspace
+  switcher, then a 2.375rem bell and search button pair (0.6875rem radius, Card fill, full
+  hairline), theme toggle and a 2.25rem account chip — plus a floating five-slot tab bar.
+  The bar is a `1.125rem`-radius card at 95% opacity over an `xl` backdrop blur, sticky
+  0.625rem above the bottom edge, carrying the floating-bar shadow. Slots are 3.125rem tall
+  at 0.8125rem radius, a 1.1875rem icon over a 0.65625rem label. Four slots are
+  destinations — Overview, Activity, Outgoings, Reports — and the fifth is **More**, a
+  menu holding everything the row cannot: Calendar, Notifications, Clients, Giving,
+  Accounts, Debts, Loans given, Investments, then Settings behind a separator. It opens
+  upward from the bar on the ordinary dropdown grammar, keeps the sidebar's own group
+  headings so it reads as the same map rather than a second one, and caps its height with
+  Radix's measured available space, so only a genuinely short viewport scrolls. The More
+  slot takes the active fill whenever the open page lives inside it, so "you are here"
+  survives on all nine.
+- **Why four and a menu, not five destinations.** Five links held the row at its legible
+  limit while leaving eight of the twelve pages with no route below `lg` at all — Giving,
+  Accounts, Debts, Loans given and Investments were unreachable on a phone, because the
+  rail carrying them is `hidden … lg:flex`. Settings gave up the fifth slot rather than a
+  destination, since the account menu in the mobile header already reaches it. A sixth
+  slot is not the alternative: the thumb row stops at five.
+- **Counts on mobile** are a filled circle rather than a pill — 1rem across on the bell,
+  0.9375rem on a tab slot, `{colors.obligation}` with its `-foreground` ink, pinned to the
+  icon's corner. This is the case the `-foreground` half of each money token exists for.
+- **Account footer:** a 2.75rem row holding a 1.625rem round initial chip on Track, the
+  name at 0.8125rem weight-500 over the email at 0.6875rem Graphite, both truncating.
 - **Page header:** every page opens with a kicker (the sidebar group, uppercase Graphite)
   above the `<h1>`. The kicker answers "where am I", which is what lets the title stay
   short and large.
+
+### Status Pills & Count Badges
+
+Two shapes, and the difference between them is whether the thing being labelled is a
+number.
+
+- **Status pill:** a `{rounded.pill}` capsule, Wash fill, Graphite ink, 0.6875rem
+  weight-500, 0.5rem horizontal padding. It states a condition in words — *Own cost*, *At
+  cost*, *Fixed price*, *In retainer*, *Pending viewer invitation* — and it is deliberately
+  neutral. The pill is often the only thing distinguishing an amber unrecovered figure from
+  a healthy one, and WCAG 1.4.1 does not allow that distinction to be a hue.
+- **Count badge:** a 0.375rem-radius rectangle, a money-type surface tint under its own
+  ink, 0.6875rem weight-600, tabular. It appears where a destination or a row carries a
+  number of money events, and its colour is the type of event being counted.
+
+A pill never carries a currency amount; an amount belongs in the row's figure column where
+it can align with the amounts above and below it.
+
+### Row Lists
+
+The app's default way of showing many records: a hairline-bordered container at the tile
+or surface radius, its children divided by 60%-opacity hairlines rather than by gaps, each
+row padded 1rem — rising to 1.25rem, and 1.5rem at `sm`, on a full-width list surface —
+with the identifying text truncating on the left and controls held flush right. Rows stack
+to a column below `sm` so a select and a delete button never compress the name beside them.
+
+A row may be tinted to mark unread or unactioned state — a money-type surface at 30%
+opacity, faint enough that the ink on it is untouched — and pairs that tint with a 0.5rem
+status dot at the row's leading edge, filled with the money token when live and with the
+hairline colour once handled. Tint alone would be colour carrying meaning on its own.
+
+### Supporting Primitives
+
+- **Avatar:** a 2.5rem circle with a Wash fallback holding the initial. Used in the account
+  menu; the nav's own initial chips are smaller bespoke circles on Track.
+- **Skeleton:** Wash fill at the placeholder radius (0.375rem) with a pulse. The only
+  loading treatment other than a spinning 1.5rem Graphite loader centred in the surface
+  that is still loading.
+- **Alert:** a full-width 0.5rem-radius box with a hairline, an optional icon pinned top
+  left, a weight-500 title and 0.875rem body. The destructive variant tints border, icon
+  and text with `{colors.destructive}` and leaves the fill alone.
+- **Confirm dialog:** the destructive counterpart to a dialog — same entrance, same 48%
+  slide, but an 80%-black overlay with no blur, a 0.5rem radius, and the lighter transient
+  shadow where a dialog takes the modal tier.
+
+> **Known drift.** The alert, textarea and confirm dialog above are unrefreshed scaffold
+> defaults: they sit at a 0.5rem radius that is on no step of the Shapes scale, and they
+> reach for `bg-background` where the system distinguishes Card from Sunken. They are
+> documented as they are, not as they should be. Bring each onto the scale when its file is
+> next opened; do not copy their values into anything new.
 
 ### Transaction Type Tile *(signature)*
 
@@ -626,7 +764,10 @@ The dashboard opens on one figure, not a row of four. A `{rounded.hero}` slab in
 carries the net position at up to 3.75rem in the display face, a single sentence naming
 the surplus or deficit, and an in/out/kept bar splitting income three ways. Three stat
 tiles sit beside it — Income, Expenses, Giving — each a Graphite 0.75rem label over a
-weight-600 tabular figure in the token of what it measures.
+weight-600 tabular figure in the token of what it measures, and each one navigable per the
+Navigable Figure treatment. Income and Expenses open the register already filtered to that
+type; Giving opens the giving workspace instead, because giving is the one money type with
+a place of its own to go.
 
 The hero is what replaced the old four-across stat row: ten equal-weight cards gave
 nothing priority, and one large figure with three supporting tiles sets the colour
@@ -643,6 +784,39 @@ That colour shift makes it the one component at genuine risk of communicating by
 alone, so two things are required rather than decorative: the percentage label beside it,
 and the remaining-or-over figure named in words beneath. The track carries
 `role="progressbar"` with `aria-valuenow` so the value is available without sight of it.
+
+### Financial Calendar *(signature)*
+
+The densest application of the money palette in the product, and the clearest
+demonstration of why it is only four colours. A month grid puts every expected movement —
+income due, expenses scheduled, giving committed, debt payments falling — on the day it
+lands, and the only way that stays readable is that a glance at a cell is a glance at four
+hues and nothing else.
+
+- **Grid:** seven equal columns inside a `{rounded.surface}` card. The weekday header is a
+  Sunken band with 0.6875rem weight-600 uppercase Graphite labels at 0.06em tracking; day
+  cells are at least 8rem tall, separated by 60%-opacity hairlines on the bottom and right
+  edges only, and days outside the month drop to Sunken at 50%.
+- **Date chip:** a 1.75rem circle holding the day number at 0.75rem, tabular. Graphite on
+  an ordinary day; today fills with the Contrast Slab. Today is chrome, not money, so it
+  takes the neutral primary rather than a hue.
+- **Event chip:** a 0.5rem-radius block on the money type's surface tint, opening with a
+  0.375rem dot in the solid token, then the title truncating at 0.6875rem weight-500, then
+  the amount beneath in the token's ink at 0.625rem weight-600, tabular, indented past the
+  dot. Hover shifts brightness rather than fill, because the fill is already carrying
+  meaning. At full size the chip grows to 0.875rem title, 0.875rem amount, and adds the
+  settlement status in words on the same baseline.
+- **Overflow:** a cell that runs out of room ends with a Graphite `+N more` at 0.65625rem
+  rather than compressing the chips.
+- **Legend:** a closing row of four 0.5rem dots naming Income, Expense, Giving and Debt
+  payment in words. The calendar is the one surface where all four hues appear at once, so
+  it is the one surface that must name them.
+
+> **Known drift.** The settled marker is a check glyph in Income Blue. By the doctrine
+> recorded under the Giving-Is-Not-Green-Money Rule — paid, repaid and settled states are
+> neutral ink — that tick should be Graphite: the glyph already says settled, and the blue
+> claims the movement was income. Left as-is here because it is a live component, not a
+> decision.
 
 ## Do's and Don'ts
 
@@ -666,6 +840,13 @@ and the remaining-or-over figure named in words beneath. The track carries
 - **Do** keep the semantic four bound to their meanings in charts and exports, not just in
   the UI. Multi-series charts use one token per money type; single-type breakdowns use a
   tonal ramp of that same type.
+- **Do** let a summary figure open the page it summarises, using the `navigableFigure`
+  class rather than a fresh hover treatment — and add no chrome at rest. A figure is not a
+  button; it becomes one only under the pointer.
+- **Do** reach for the shared shapes in `components/dashboard/panel.tsx` — `StatTile`,
+  `SectionHeading`, `EmptyState` — instead of re-deriving them. They were extracted
+  because seven files held literal copies, which is how a padding change reaches six of
+  them and misses the seventh.
 
 ### Don't:
 
@@ -695,3 +876,7 @@ and the remaining-or-over figure named in words beneath. The track carries
 - **Don't** exceed two dashboard panels across.
 - **Don't** rebuild interactive primitives by hand. Radix supplies the semantics; restyle
   the existing wrapper in `components/ui/` instead.
+- **Don't** paste a scaffold component in unmodified. A stock shadcn default arrives at a
+  0.5rem radius on `bg-background`, and this system has neither — corners come from the
+  Shapes scale and surfaces are Card or Sunken. The primitives already carrying those
+  defaults are listed under Supporting Primitives as drift, not as precedent.
