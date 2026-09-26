@@ -72,7 +72,8 @@ const sourceFile: WorkspaceExportFile = {
 
 describe("workspace ZIP archive", () => {
   it("packages the workspace, files, checksums, and a safe attachment index", async () => {
-    const bytes = await buildWorkspaceArchive(workspaceExport, [sourceFile], async (key) => {
+    const bytes = await buildWorkspaceArchive(workspaceExport, [sourceFile], async (workspaceId, key) => {
+      assert.equal(workspaceId, workspaceExport.workspace.id);
       assert.equal(key, sourceFile.storageKey);
       return { bytes: Uint8Array.from([1, 2, 3, 4]), contentType: "application/pdf" };
     });

@@ -2,12 +2,15 @@
 
 import {
   createContext,
+  Fragment,
   useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
+  useRef,
   useState,
 } from "react";
-import { setStoredWorkspaceCurrency } from "@/lib/currency";
+import { bindWorkspace, resolveWorkspace } from "@/lib/workspace-runtime";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -54,12 +57,20 @@ const STORAGE_KEY = "activeWorkspaceId";
 
 function getStoredWorkspaceId(): string | null {
   if (typeof window === "undefined") return null;
-  return localStorage.getItem(STORAGE_KEY);
+  try {
+    return localStorage.getItem(STORAGE_KEY);
+  } catch {
+    return null;
+  }
 }
 
 function setStoredWorkspaceId(id: string) {
   if (typeof window === "undefined") return;
-  localStorage.setItem(STORAGE_KEY, id);
+  try {
+    localStorage.setItem(STORAGE_KEY, id);
+  } catch {
+    // Persistence is optional; this tab's resolved selection is authoritative.
+  }
 }
 
 // ─── Provider ────────────────────────────────────────────────────────────────
@@ -68,52 +79,53 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [activeWorkspace, setActiveWorkspaceState] = useState<Workspace | null>(null);
   const [loading, setLoading] = useState(true);
+  const [readyScope, setReadyScope] = useState<string | null>(null);
+  const scope = activeWorkspace ? `${activeWorkspace.id}:${activeWorkspace.currency}` : null;
+  const selectedId = useRef<string | null | undefined>(undefined);
+  const requestVersion = useRef(0);
+
+  // Bind only committed UI, before descendants' passive request effects run.
+  useLayoutEffect(() => {
+    bindWorkspace(activeWorkspace);
+    setReadyScope(scope);
+    return () => bindWorkspace(null);
+  }, [activeWorkspace, scope]);
 
   const fetchWorkspaces = useCallback(async () => {
+    const version = ++requestVersion.current;
+    if (selectedId.current === undefined) selectedId.current = getStoredWorkspaceId();
     try {
       // eslint-disable-next-line no-restricted-syntax -- /api/workspaces is user-scoped (requireAuth), and this call is what decides the active workspace, so it cannot depend on it.
       const res = await fetch("/api/workspaces");
       if (!res.ok) return;
       const data = await res.json();
+      if (version !== requestVersion.current) return;
       const ws: Workspace[] = data.workspaces ?? [];
       setWorkspaces(ws);
 
-      // Resolve active workspace
-      const storedId = getStoredWorkspaceId();
-      const stored = ws.find((w) => w.id === storedId);
-
-      if (stored) {
-        setStoredWorkspaceCurrency(stored.currency);
-        setActiveWorkspaceState(stored);
-      } else {
-        // Default to first workspace (the default one)
-        const defaultWs = ws.find((w) => w.is_default) ?? ws[0];
-        if (defaultWs) {
-          setStoredWorkspaceId(defaultWs.id);
-          setStoredWorkspaceCurrency(defaultWs.currency);
-          setActiveWorkspaceState(defaultWs);
-        }
-      }
+      const resolved = resolveWorkspace(ws, selectedId.current ?? null);
+      selectedId.current = resolved?.id ?? null;
+      setActiveWorkspaceState(resolved);
+      if (resolved) setStoredWorkspaceId(resolved.id);
     } catch {
       // Silently fail on first load
     } finally {
-      setLoading(false);
+      if (version === requestVersion.current) setLoading(false);
     }
   }, []);
 
   useEffect(() => {
     fetchWorkspaces();
+    return () => { requestVersion.current += 1; };
   }, [fetchWorkspaces]);
 
   const setActiveWorkspace = useCallback(
     (id: string) => {
       const ws = workspaces.find((w) => w.id === id);
       if (!ws) return;
+      selectedId.current = id;
       setStoredWorkspaceId(id);
-      setStoredWorkspaceCurrency(ws.currency);
       setActiveWorkspaceState(ws);
-      // Dispatch a custom event so components can re-fetch data
-      window.dispatchEvent(new CustomEvent("workspace-changed", { detail: { id } }));
     },
     [workspaces],
   );
@@ -169,7 +181,18 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
         updateWorkspace,
       }}
     >
-      {children}
+      {activeWorkspace && readyScope === scope ? (
+        <Fragment key={activeWorkspace.id}>{children}</Fragment>
+      ) : (
+        <div className="flex min-h-screen items-center justify-center bg-background text-sm text-muted-foreground" role="status">
+          {loading || activeWorkspace ? "Loading workspace…" : (
+            <div className="space-y-3 text-center">
+              <p>Could not load a workspace.</p>
+              <button type="button" className="underline" onClick={() => void fetchWorkspaces()}>Try again</button>
+            </div>
+          )}
+        </div>
+      )}
     </WorkspaceContext.Provider>
   );
 }

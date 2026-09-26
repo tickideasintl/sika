@@ -12,16 +12,13 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
     const { workspaceId } = await requireAuthWithWorkspace("viewer");
     const { id, documentId } = await params;
     const document = await documentsService.get(workspaceId, id, documentId);
-    if (/^https?:\/\//i.test(document.storageKey)) {
-      return NextResponse.redirect(document.storageKey);
-    }
     if (!isStorageConfigured()) {
       return NextResponse.json(
         { error: "File storage is not configured on this Sika instance" },
         { status: 503 },
       );
     }
-    const stored = await getStoredDocument(document.storageKey);
+    const stored = await getStoredDocument(workspaceId, document.storageKey);
     const contentType =
       (document.mimeType && SUPPORTING_DOCUMENT_MIME_TYPES.has(document.mimeType)
         ? document.mimeType
@@ -51,7 +48,7 @@ export async function DELETE(_request: NextRequest, { params }: RouteParams) {
     const { id, documentId } = await params;
     const document = await documentsService.remove(workspaceId, id, documentId);
     if (!/^https?:\/\//i.test(document.storageKey) && isStorageConfigured()) {
-      await deleteStoredDocument(document.storageKey).catch((error) => {
+      await deleteStoredDocument(workspaceId, document.storageKey).catch((error) => {
         console.error("Failed to delete stored supporting document:", error);
       });
     }

@@ -8,6 +8,7 @@ const REQUIRED_TABLES = [
   "accounts",
   "verifications",
   "transactions",
+  "stored_objects",
   "transaction_review_events",
   "categories",
   "budgets",
@@ -32,6 +33,8 @@ const REQUIRED_TABLES = [
 // Columns that guarantee latest migrations have been applied.
 const REQUIRED_COLUMNS = [
   { table: "transactions", column: "receipt_storage_id" },
+  { table: "stored_objects", column: "storage_key" },
+  { table: "stored_objects", column: "workspace_id" },
   { table: "transactions", column: "date" },
   { table: "transactions", column: "assigned_to_user_id" },
   { table: "transaction_review_events", column: "actor_name" },

@@ -1,37 +1,22 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { getStoredWorkspaceCurrency } from "@/lib/currency";
+import { useWorkspace } from "@/contexts/workspace-context";
+import { requireBoundWorkspaceId } from "@/lib/workspace-runtime";
 
 // ─── Generic fetch helpers ───────────────────────────────────────────────────
 
-function getActiveWorkspaceId(): string | null {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("activeWorkspaceId");
-}
-
 export function useWorkspaceCurrency() {
-  const [currency, setCurrency] = useState<string>(() => getStoredWorkspaceCurrency() ?? "GBP");
-
-  useEffect(() => {
-    const handler = () => setCurrency(getStoredWorkspaceCurrency() ?? "GBP");
-    handler();
-    window.addEventListener("workspace-changed", handler);
-    return () => window.removeEventListener("workspace-changed", handler);
-  }, []);
-
-  return currency;
+  return useWorkspace().activeWorkspace?.currency ?? "GBP";
 }
 
 async function apiFetch<T>(
   url: string,
   init?: RequestInit,
 ): Promise<T> {
-  const workspaceId = getActiveWorkspaceId();
+  const workspaceId = requireBoundWorkspaceId();
   const headers = new Headers(init?.headers);
-  if (workspaceId) {
-    headers.set("x-workspace-id", workspaceId);
-  }
+  headers.set("x-workspace-id", workspaceId);
 
   const res = await fetch(url, { ...init, headers });
   if (!res.ok) {
@@ -44,9 +29,9 @@ async function apiFetch<T>(
 }
 
 export async function apiFetchBlob(url: string): Promise<Blob> {
-  const workspaceId = getActiveWorkspaceId();
+  const workspaceId = requireBoundWorkspaceId();
   const headers = new Headers();
-  if (workspaceId) headers.set("x-workspace-id", workspaceId);
+  headers.set("x-workspace-id", workspaceId);
   const response = await fetch(url, { headers });
   if (!response.ok) {
     const body = await response.json().catch(() => ({}));

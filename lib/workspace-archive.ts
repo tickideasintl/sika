@@ -11,7 +11,7 @@ export const WORKSPACE_ARCHIVE_FORMAT = "sika-workspace-archive";
 export const WORKSPACE_ARCHIVE_VERSION = 1;
 
 type StoredFile = Awaited<ReturnType<typeof getStoredDocument>>;
-type LoadStoredFile = (storageKey: string) => Promise<StoredFile>;
+type LoadStoredFile = (workspaceId: string, storageKey: string) => Promise<StoredFile>;
 
 export class WorkspaceArchiveError extends Error {
   constructor(
@@ -71,7 +71,7 @@ export async function buildWorkspaceArchive(
 
     let stored: StoredFile;
     try {
-      stored = await loadStoredFile(sourceFile.storageKey);
+      stored = await loadStoredFile(workspaceExport.workspace.id, sourceFile.storageKey);
     } catch {
       throw new WorkspaceArchiveError(
         "An attached file could not be read from storage",

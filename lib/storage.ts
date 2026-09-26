@@ -5,6 +5,7 @@ import {
   S3Client,
 } from "@aws-sdk/client-s3";
 import { randomUUID } from "crypto";
+import { assertStoredObjectInWorkspace, registerStoredObject } from "@/lib/db/stored-objects";
 
 // ---------------------------------------------------------------------------
 // S3-compatible storage helper
@@ -81,6 +82,7 @@ export interface UploadResult {
 export async function uploadReceipt(
   buffer: Buffer,
   mimeType: string,
+  workspaceId: string,
 ): Promise<UploadResult> {
   const client = getS3Client();
   const bucket = getBucket();
@@ -95,6 +97,8 @@ export async function uploadReceipt(
       ContentType: mimeType,
     }),
   );
+
+  await recordUploadOwnership(workspaceId, key);
 
   // Build a public URL only when an explicit public base URL is configured.
   // This avoids leaking internal S3 endpoint addresses to the client.
@@ -116,6 +120,7 @@ export function isStorageConfigured() {
 export async function uploadSupportingDocument(
   buffer: Buffer,
   mimeType: string,
+  workspaceId: string,
 ): Promise<UploadResult> {
   const client = getS3Client();
   const bucket = getBucket();
@@ -130,11 +135,13 @@ export async function uploadSupportingDocument(
     }),
   );
 
+  await recordUploadOwnership(workspaceId, key);
   const publicBase = process.env.S3_PUBLIC_URL?.replace(/\/$/, "");
   return { key, url: publicBase ? `${publicBase}/${key}` : key };
 }
 
-export async function getStoredDocument(key: string) {
+export async function getStoredDocument(workspaceId: string, key: string) {
+  await assertStoredObjectInWorkspace(workspaceId, key);
   const result = await getS3Client().send(
     new GetObjectCommand({ Bucket: getBucket(), Key: key }),
   );
@@ -145,8 +152,21 @@ export async function getStoredDocument(key: string) {
   };
 }
 
-export async function deleteStoredDocument(key: string) {
+export async function deleteStoredDocument(workspaceId: string, key: string) {
+  await assertStoredObjectInWorkspace(workspaceId, key);
   await getS3Client().send(
     new DeleteObjectCommand({ Bucket: getBucket(), Key: key }),
   );
+}
+
+async function recordUploadOwnership(workspaceId: string, key: string) {
+  try {
+    await registerStoredObject(workspaceId, key);
+  } catch (error) {
+    // This key was generated in this request, not supplied by a caller.
+    await getS3Client().send(
+      new DeleteObjectCommand({ Bucket: getBucket(), Key: key }),
+    ).catch(() => undefined);
+    throw error;
+  }
 }

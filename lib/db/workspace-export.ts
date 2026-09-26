@@ -26,6 +26,7 @@ import {
   recurringMoneySettlements,
   recurringMoneyOccurrences,
   recurringOutgoings,
+  storedObjects,
   transactionDocuments,
   transactionImportProfiles,
   transactionReviewEvents,
@@ -34,6 +35,7 @@ import {
   workspaceMemberships,
   workspaces,
 } from "@/db/schema";
+import { StoredObjectOwnershipError } from "./stored-objects";
 
 export const WORKSPACE_EXPORT_FORMAT = "sika-workspace-export";
 export const WORKSPACE_EXPORT_VERSION = 5;
@@ -340,6 +342,16 @@ export async function createWorkspaceArchiveSource(
         }
       }
 
+      // References, including legacy-* supporting documents, are not provenance.
+      // Fail closed rather than silently emitting an incomplete archive.
+      const ownedObjects = await tx
+        .select({ storageKey: storedObjects.storageKey })
+        .from(storedObjects)
+        .where(eq(storedObjects.workspaceId, workspaceId));
+      const ownedKeys = new Set(ownedObjects.map((object) => object.storageKey));
+      if (files.some((file) => !ownedKeys.has(file.storageKey))) {
+        throw new StoredObjectOwnershipError();
+      }
       return { workspaceExport, files };
     },
     { isolationLevel: "repeatable read", accessMode: "read only" },

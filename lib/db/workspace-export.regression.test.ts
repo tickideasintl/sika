@@ -8,6 +8,7 @@ import {
   investmentEvents,
   investments,
   pushSubscriptions,
+  storedObjects,
   transactionDocuments,
   transactions,
   users,
@@ -57,6 +58,10 @@ describe(
       ]);
 
       try {
+        await db.insert(storedObjects).values({
+          storageKey: "supporting-documents/document-object-key",
+          workspaceId,
+        });
         await db.insert(transactions).values([
           {
             id: transactionId,
@@ -66,7 +71,7 @@ describe(
             date: "2026-08-01",
             type: "giving",
             category: "Community",
-            receiptStorageId: "private/document-object-key",
+            receiptStorageId: "supporting-documents/document-object-key",
           },
           {
             id: otherTransactionId,
@@ -84,7 +89,7 @@ describe(
           userId,
           workspaceId,
           transactionId,
-          storageKey: "private/document-object-key",
+          storageKey: "supporting-documents/document-object-key",
           fileName: "receipt.pdf",
           mimeType: "application/pdf",
           sizeBytes: 1200,
@@ -142,7 +147,7 @@ describe(
 
         const serialized = JSON.stringify(exported);
         assert.doesNotMatch(serialized, /Secret client|private business/i);
-        assert.doesNotMatch(serialized, /private\/receipt-storage-key|private\/document-object-key/);
+        assert.doesNotMatch(serialized, /private\/receipt-storage-key|supporting-documents\/document-object-key/);
         assert.doesNotMatch(serialized, /private-capability|private-p256dh-key|private-push-auth/);
         assert.doesNotMatch(serialized, /encrypted-private-ai-key/);
 
@@ -152,11 +157,11 @@ describe(
         );
         assert.equal(archiveSource.files.length, 1, "does not duplicate a backfilled receipt");
         assert.equal(archiveSource.files[0]?.transactionId, transactionId);
-        assert.equal(archiveSource.files[0]?.storageKey, "private/document-object-key");
+        assert.equal(archiveSource.files[0]?.storageKey, "supporting-documents/document-object-key");
         assert.doesNotMatch(JSON.stringify(archiveSource.files), /other-workspace/);
         assert.doesNotMatch(
           JSON.stringify(archiveSource.workspaceExport),
-          /private\/document-object-key/,
+          /supporting-documents\/document-object-key/,
         );
 
         await assert.rejects(

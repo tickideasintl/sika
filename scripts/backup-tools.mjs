@@ -33,6 +33,7 @@ export const REQUIRED_BACKUP_TABLES = [
   "transactions",
   "transaction_review_events",
   "transaction_documents",
+  "stored_objects",
   "categories",
   "budgets",
   "recurring_outgoings",

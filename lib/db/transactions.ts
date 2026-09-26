@@ -14,6 +14,7 @@ import * as givingRecipientsService from "./giving-recipients";
 import * as recurringMoneyOccurrences from "@/lib/recurring-money-occurrences";
 import * as transactionRulesService from "./transaction-rules";
 import { ownerUserId } from "./workspaces";
+import { assertStoredObjectInWorkspace } from "./stored-objects";
 import {
   idSchema,
   limitSchema,
@@ -325,6 +326,7 @@ export async function getById(workspaceId: string, id: string) {
 export async function create(workspaceId: string, input: CreateInput) {
   workspaceIdSchema.parse(workspaceId);
   transactionCreateSchema.parse(input);
+  await assertStoredObjectInWorkspace(workspaceId, input.receiptStorageId);
   const userId = await ownerUserId(workspaceId);
   if (input.status === "reconciled") {
     throw new Error("Transactions can only be reconciled through account reconciliation");
@@ -514,6 +516,7 @@ export async function update(workspaceId: string, id: string, input: UpdateInput
   workspaceIdSchema.parse(workspaceId);
   idSchema.parse(id);
   transactionUpdateSchema.parse(input);
+  await assertStoredObjectInWorkspace(workspaceId, input.receiptStorageId);
   const existing = await getById(workspaceId, id);
   if (!existing) throw new Error("Transaction not found or unauthorized");
   const actor = actorUserId

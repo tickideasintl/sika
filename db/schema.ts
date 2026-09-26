@@ -875,6 +875,18 @@ export const transactionReviewEvents = pgTable(
   (t) => [index("idx_transaction_review_events_transaction").on(t.transactionId, t.createdAt)],
 );
 
+// Upload provenance, independent of any user-editable transaction reference.
+export const storedObjects = pgTable(
+  "stored_objects",
+  {
+    storageKey: text("storage_key").primaryKey(),
+    workspaceId: text("workspace_id").notNull()
+      .references(() => workspaces.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("idx_stored_objects_workspace").on(t.workspaceId)],
+);
+
 export const transactionDocuments = pgTable(
   "transaction_documents",
   {

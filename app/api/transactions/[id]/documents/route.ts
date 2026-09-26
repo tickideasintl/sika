@@ -88,7 +88,7 @@ export async function POST(
       return NextResponse.json({ error: "The file content does not match its declared type" }, { status: 400 });
     }
 
-    const uploaded = await uploadSupportingDocument(buffer, detectedMime);
+    const uploaded = await uploadSupportingDocument(buffer, detectedMime, workspaceId);
     try {
       const row = await documentsService.create(workspaceId, id, {
         storageKey: uploaded.key,
@@ -98,7 +98,7 @@ export async function POST(
       });
       return NextResponse.json({ document: toDocument(id, row) }, { status: 201 });
     } catch (error) {
-      await deleteStoredDocument(uploaded.key).catch((cleanupError) => {
+      await deleteStoredDocument(workspaceId, uploaded.key).catch((cleanupError) => {
         console.error("Failed to clean up supporting document upload:", cleanupError);
       });
       throw error;

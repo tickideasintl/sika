@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { auth } from "./auth";
 import * as workspaceService from "./db/workspaces";
 import type { WorkspaceRole } from "./db/workspaces";
+import { resolveWorkspaceAccess } from "./workspace-access";
 
 // ─── Core server helpers ─────────────────────────────────────────────────────
 
@@ -55,24 +56,14 @@ export async function requireAuthWithWorkspace(
   const h = await headers();
   const headerWorkspaceId = h.get("x-workspace-id");
 
-  if (headerWorkspaceId) {
-    const access = await workspaceService.getAccess(actorUserId, headerWorkspaceId);
-    if (access) {
-      if (!workspaceService.hasWorkspaceRole(access.role, requiredRole)) {
-        throw new Error("Unauthorized");
-      }
-      return {
-        actorUserId,
-        workspaceId: access.workspace.id,
-        role: access.role,
-      };
-    }
-  }
-
-  const defaultWs = await workspaceService.getOrCreateDefault(actorUserId);
+  const access = await resolveWorkspaceAccess(
+    actorUserId,
+    headerWorkspaceId,
+    requiredRole,
+    workspaceService,
+  );
   return {
     actorUserId,
-    workspaceId: defaultWs.id,
-    role: "owner",
+    ...access,
   };
 }

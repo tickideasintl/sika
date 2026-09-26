@@ -153,7 +153,7 @@ export async function DELETE(
       await Promise.all(
         documents.map(async (document) => {
           if (/^https?:\/\//i.test(document.storageKey)) return;
-          await deleteStoredDocument(document.storageKey).catch((error) => {
+          await deleteStoredDocument(workspaceId, document.storageKey).catch((error) => {
             console.error("Failed to delete stored transaction document:", error);
           });
         }),
