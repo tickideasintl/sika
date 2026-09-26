@@ -350,30 +350,33 @@ export async function create(workspaceId: string, input: CreateInput) {
   );
   const id = genId();
   const now = new Date();
-  const [row] = await db
-    .insert(transactions)
-    .values({
-      id,
-      userId,
-      workspaceId,
-      amount: String(input.amount),
-      date: input.date,
-      type: input.type,
-      accountId: input.accountId ?? null,
-      status: input.status ?? "cleared",
-      category: input.category,
-      payee: input.payee?.trim() || null,
-      clientId: input.clientId ?? null,
-      givingRecipientId: input.givingRecipientId ?? null,
-      givingDesignationId: input.givingDesignationId ?? null,
-      notes: input.notes ?? null,
-      tags: input.tags ?? [],
-      receiptStorageId: input.receiptStorageId ?? null,
-      createdAt: now,
-      updatedAt: now,
-    })
-    .returning();
-  return row;
+  return db.transaction(async (tx) => {
+    await assertStoredObjectInWorkspace(workspaceId, input.receiptStorageId, tx);
+    const [row] = await tx
+      .insert(transactions)
+      .values({
+        id,
+        userId,
+        workspaceId,
+        amount: String(input.amount),
+        date: input.date,
+        type: input.type,
+        accountId: input.accountId ?? null,
+        status: input.status ?? "cleared",
+        category: input.category,
+        payee: input.payee?.trim() || null,
+        clientId: input.clientId ?? null,
+        givingRecipientId: input.givingRecipientId ?? null,
+        givingDesignationId: input.givingDesignationId ?? null,
+        notes: input.notes ?? null,
+        tags: input.tags ?? [],
+        receiptStorageId: input.receiptStorageId ?? null,
+        createdAt: now,
+        updatedAt: now,
+      })
+      .returning();
+    return row;
+  });
 }
 
 export async function reviewImport(
@@ -606,6 +609,7 @@ export async function update(workspaceId: string, id: string, input: UpdateInput
   }
 
   return db.transaction(async (tx) => {
+    await assertStoredObjectInWorkspace(workspaceId, input.receiptStorageId, tx);
     if (input.type !== undefined && input.type !== existing.type) {
       await tx
         .select({ id: transactions.id })

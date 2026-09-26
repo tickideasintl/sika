@@ -115,4 +115,12 @@ it("provider gates children and keys their drafts, reading persistence only once
   assert.match(source, /activeWorkspace && readyScope === scope/);
   assert.match(source, /<Fragment key=\{activeWorkspace\.id\}>/);
   assert.match(source, /return \(\) => bindWorkspace\(null\)/);
+  assert.match(source, /const scope = activeWorkspace\?\.id \?\? null/);
+});
+
+it("updates currency without changing the workspace identity that owns drafts", () => {
+  bindWorkspace({ id: "workspace-a", currency: "GBP" });
+  assert.equal(getStoredWorkspaceCurrency(), "GBP");
+  bindWorkspace({ id: "workspace-a", currency: "USD" });
+  assert.equal(getStoredWorkspaceCurrency(), "USD");
 });

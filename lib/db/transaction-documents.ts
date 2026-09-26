@@ -138,6 +138,7 @@ export async function create(
   await assertStoredObjectInWorkspace(workspaceId, input.storageKey);
   const userId = await ownerUserId(workspaceId);
   return db.transaction(async (tx) => {
+    await assertStoredObjectInWorkspace(workspaceId, input.storageKey, tx);
     const [transaction] = await tx
       .select({ id: transactions.id, type: transactions.type })
       .from(transactions)

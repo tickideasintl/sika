@@ -25,6 +25,7 @@ let transactionRows: Row[];
 let documentRows: Row[];
 let writes: Row[];
 let commands: unknown[];
+let lockedKeys: string[];
 
 function query(selection?: Record<string, unknown>) {
   let table: unknown;
@@ -34,6 +35,11 @@ function query(selection?: Record<string, unknown>) {
     where(condition: SQL) { params = dialect.sqlToQuery(condition).params; return chain; },
     innerJoin() { return chain; },
     limit() { return chain; },
+    for(mode: string) {
+      assert.equal(mode, "update");
+      if (table === storedObjects) lockedKeys.push(String(params[0]));
+      return chain;
+    },
     then(resolve: (rows: Row[]) => unknown, reject: (error: unknown) => unknown) {
       return Promise.resolve().then(() => {
         let rows: Row[] = [];
@@ -47,6 +53,9 @@ function query(selection?: Record<string, unknown>) {
           rows = [{ id: workspaceId, userId: "owner", name: "Test" }];
         } else if (table === transactions) {
           rows = transactionRows;
+          if (params.some((param) => typeof param === "string" && /^(receipts|supporting-documents)\//.test(param))) {
+            rows = rows.filter((row) => params.includes(row.receiptStorageId));
+          }
           if (selection?.storageKey) {
             rows = rows.filter((row) => row.receiptStorageId != null).map((row) => ({
               transactionId: row.id, storageKey: row.receiptStorageId,
@@ -54,6 +63,9 @@ function query(selection?: Record<string, unknown>) {
           }
         } else if (table === transactionDocuments) {
           rows = documentRows;
+          if (params.some((param) => typeof param === "string" && /^(receipts|supporting-documents)\//.test(param))) {
+            rows = rows.filter((row) => params.includes(row.storageKey));
+          }
         }
         return rows;
       }).then(resolve, reject);
@@ -69,6 +81,7 @@ describe("receipt workspace ownership (isolated database and S3 mocks)", () => {
     documentRows = [];
     writes = [];
     commands = [];
+    lockedKeys = [];
     // Defense against an accidentally unmocked code path making a real query.
     mock.method(db.$client, "query", () => { throw new Error("Live database access forbidden"); });
     mock.method(db.$client, "connect", () => { throw new Error("Live database access forbidden"); });
@@ -88,6 +101,14 @@ describe("receipt workspace ownership (isolated database and S3 mocks)", () => {
         return { where: () => ({ returning: async () => [row] }) };
       },
     })) as unknown as typeof db.update);
+    mock.method(db, "delete", ((table: unknown) => ({
+      async where(condition: SQL) {
+        assert.equal(table, storedObjects);
+        const params = dialect.sqlToQuery(condition).params;
+        assert.ok(params.includes(workspaceId));
+        ownership.delete(String(params[0]));
+      },
+    })) as unknown as typeof db.delete);
     mock.method(S3Client.prototype, "send", (async (command: unknown) => {
       commands.push(command);
       return {
@@ -179,6 +200,84 @@ describe("receipt workspace ownership (isolated database and S3 mocks)", () => {
     }
     assert.equal(commands.length, 2);
     assert.ok(commands.every((command) => command instanceof PutObjectCommand));
+  });
+
+  it("keeps a shared object until the final document reference is removed", async () => {
+    documentRows = [{ id: "remaining-document", workspaceId, storageKey: ownKey }];
+    await deleteStoredDocument(workspaceId, ownKey);
+    assert.equal(commands.length, 0);
+    assert.equal(ownership.get(ownKey), workspaceId);
+    documentRows = [];
+    await deleteStoredDocument(workspaceId, ownKey);
+    assert.equal(commands.length, 1);
+    assert.ok(commands[0] instanceof DeleteObjectCommand);
+    assert.equal(ownership.has(ownKey), false);
+    await assert.rejects(assertStoredObjectInWorkspace(workspaceId, ownKey), StoredObjectOwnershipError);
+  });
+
+  it("preserves objects still referenced by another transaction receipt", async () => {
+    transactionRows = [{ id: "other-transaction", workspaceId, receiptStorageId: ownKey }];
+    await deleteStoredDocument(workspaceId, ownKey);
+    assert.equal(commands.length, 0);
+    assert.equal(ownership.get(ownKey), workspaceId);
+    // A different key must not block cleanup.
+    transactionRows[0].receiptStorageId = foreignKey;
+    await deleteStoredDocument(workspaceId, ownKey);
+    assert.equal(commands.length, 1);
+  });
+
+  it("checks both reference types even for historically planted cross-workspace references", async () => {
+    documentRows = [{ id: "legacy", workspaceId: foreignWorkspace, storageKey: ownKey }];
+    await deleteStoredDocument(workspaceId, ownKey);
+    assert.equal(commands.length, 0);
+    assert.equal(ownership.get(ownKey), workspaceId);
+  });
+
+  it("retires authorization before S3 and fails closed when S3 deletion fails", async () => {
+    mock.method(S3Client.prototype, "send", (async () => {
+      assert.equal(ownership.has(ownKey), false);
+      throw new Error("Storage unavailable");
+    }) as unknown as typeof S3Client.prototype.send);
+    await assert.rejects(deleteStoredDocument(workspaceId, ownKey), /Storage unavailable/);
+    await assert.rejects(transactionService.create(workspaceId, {
+      amount: 1, date: "2026-08-01", type: "expense", category: "Test", receiptStorageId: ownKey,
+    }), StoredObjectOwnershipError);
+    assert.equal(writes.length, 0);
+  });
+
+  it("rechecks authorization under the same row lock before all reference writes", async () => {
+    const row = await transactionService.create(workspaceId, {
+      amount: 1, date: "2026-08-01", type: "giving", category: "Test", receiptStorageId: ownKey,
+    });
+    transactionRows = [row];
+    await transactionService.update(workspaceId, String(row.id), { receiptStorageId: ownKey });
+    await documentsService.create(workspaceId, String(row.id), {
+      storageKey: ownKey, fileName: "Receipt", mimeType: "image/jpeg", sizeBytes: 1,
+    });
+    await deleteStoredDocument(workspaceId, ownKey);
+    assert.deepEqual(lockedKeys, [ownKey, ownKey, ownKey, ownKey]);
+  });
+
+  it("rejects a key retired between preliminary validation and the reference write", async () => {
+    transactionRows = [{ id: "tx", workspaceId, type: "giving", receiptStorageId: null }];
+    mock.method(db, "transaction", (async (callback: (tx: typeof db) => unknown) => {
+      ownership.delete(ownKey);
+      return callback(db);
+    }) as unknown as typeof db.transaction);
+    const attempts = [
+      () => transactionService.create(workspaceId, {
+        amount: 1, date: "2026-08-01", type: "giving", category: "Test", receiptStorageId: ownKey,
+      }),
+      () => transactionService.update(workspaceId, "tx", { receiptStorageId: ownKey }),
+      () => documentsService.create(workspaceId, "tx", {
+        storageKey: ownKey, fileName: "Receipt", mimeType: "image/jpeg", sizeBytes: 1,
+      }),
+    ];
+    for (const attempt of attempts) {
+      ownership.set(ownKey, workspaceId);
+      await assert.rejects(attempt(), StoredObjectOwnershipError);
+    }
+    assert.equal(writes.length, 0);
   });
 
   it("never returns an upload if provenance persistence fails", async () => {

@@ -18,9 +18,26 @@ attachment-ownership error instead of downloading an unauthorized file. Unrelate
 transaction edits remain possible unless they explicitly resubmit the unverified
 receipt reference. JSON exports remain available.
 
+The dashboard omits unchanged receipt references when saving an edit. To detach
+an old receipt, open **Edit transaction**, choose **Remove receipt**, and save.
+This removes the transaction reference, not any separate supporting documents.
+Those can be removed through the giving transaction's supporting-document list.
+
 No receipt files are deleted by the migration. Back up both PostgreSQL and object
 storage before upgrading. Preserve the new `stored_objects` table in database
 backups; it is required to authorize restored attachments.
+
+## Deletion and ownership records
+
+Ownership records authorize live uploads; they are not permanent upload history.
+Deleting an attachment preserves its file while any transaction receipt or
+supporting document still references the key. Creating references and retiring
+keys use the same database lock.
+
+Once the last reference is gone, deletion retires authorization before removing
+the stored file. The retired key cannot be attached again. If storage deletion
+fails, an inaccessible orphan may remain and require operator cleanup; the
+application does not restore authorization to a potentially deleted file.
 
 ## Storage configuration
 

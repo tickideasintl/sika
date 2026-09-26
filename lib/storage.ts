@@ -5,7 +5,7 @@ import {
   S3Client,
 } from "@aws-sdk/client-s3";
 import { randomUUID } from "crypto";
-import { assertStoredObjectInWorkspace, registerStoredObject } from "@/lib/db/stored-objects";
+import { assertStoredObjectInWorkspace, registerStoredObject, retireUnreferencedStoredObject } from "@/lib/db/stored-objects";
 
 // ---------------------------------------------------------------------------
 // S3-compatible storage helper
@@ -153,9 +153,13 @@ export async function getStoredDocument(workspaceId: string, key: string) {
 }
 
 export async function deleteStoredDocument(workspaceId: string, key: string) {
-  await assertStoredObjectInWorkspace(workspaceId, key);
-  await getS3Client().send(
-    new DeleteObjectCommand({ Bucket: getBucket(), Key: key }),
+  // Resolve configuration before retiring authorization. No S3 call is made
+  // until retirement commits and no other reference can attach this key.
+  const client = getS3Client();
+  const bucket = getBucket();
+  if (!await retireUnreferencedStoredObject(workspaceId, key)) return;
+  await client.send(
+    new DeleteObjectCommand({ Bucket: bucket, Key: key }),
   );
 }
 

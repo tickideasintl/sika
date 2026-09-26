@@ -80,7 +80,7 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
   const [activeWorkspace, setActiveWorkspaceState] = useState<Workspace | null>(null);
   const [loading, setLoading] = useState(true);
   const [readyScope, setReadyScope] = useState<string | null>(null);
-  const scope = activeWorkspace ? `${activeWorkspace.id}:${activeWorkspace.currency}` : null;
+  const scope = activeWorkspace?.id ?? null;
   const selectedId = useRef<string | null | undefined>(undefined);
   const requestVersion = useRef(0);
 
