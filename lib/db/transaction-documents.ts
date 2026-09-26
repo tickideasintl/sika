@@ -15,6 +15,7 @@ import {
   workspaceIdSchema,
 } from "./validation";
 import { ownerUserId } from "./workspaces";
+import { assertStoredObjectInWorkspace } from "./stored-objects";
 
 async function getOwnedTransaction(
   workspaceId: string,
@@ -134,8 +135,10 @@ export async function create(
 ) {
   workspaceIdSchema.parse(workspaceId);
   idSchema.parse(transactionId);
+  await assertStoredObjectInWorkspace(workspaceId, input.storageKey);
   const userId = await ownerUserId(workspaceId);
   return db.transaction(async (tx) => {
+    await assertStoredObjectInWorkspace(workspaceId, input.storageKey, tx);
     const [transaction] = await tx
       .select({ id: transactions.id, type: transactions.type })
       .from(transactions)

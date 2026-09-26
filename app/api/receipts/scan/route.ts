@@ -176,7 +176,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Auth check -----------------------------------------------------------
-    const { actorUserId } = await requireAuthWithWorkspace();
+    const { actorUserId, workspaceId } = await requireAuthWithWorkspace();
 
     // Parse & validate file ------------------------------------------------
     const formData = await request.formData();
@@ -228,7 +228,7 @@ export async function POST(request: NextRequest) {
     );
 
     // Upload to S3-compatible storage --------------------------------------
-    const { key, url } = await uploadReceipt(buffer, detectedMime);
+    const { key, url } = await uploadReceipt(buffer, detectedMime, workspaceId);
 
     // Return stable response shape -----------------------------------------
     return NextResponse.json({

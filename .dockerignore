@@ -11,6 +11,17 @@ out
 # Production
 build
 
+# Database backups and unfinished archives, including custom output locations
+backups/
+**/backups/
+**/*.dump
+**/*.backup
+**/*.sql.gz
+**/*.sql.bz2
+**/*.sql.xz
+**/*.partial
+**/.*.partial
+
 # Debug
 npm-debug.log*
 yarn-debug.log*
@@ -47,3 +58,12 @@ docs/
 *.log
 coverage/
 .nyc_output
+
+# Private local tooling and credentials
+.factory/
+.kotadb/
+.impeccable/
+.vercel/
+user-plugins/
+memory/
+**/*.pem

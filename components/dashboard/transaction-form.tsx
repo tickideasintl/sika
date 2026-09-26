@@ -25,6 +25,7 @@ import {
 import { GivingSupportingDocuments } from "./giving/giving-supporting-documents";
 import { useToast } from "@/hooks/use-toast";
 import { useApiQuery, apiFetch } from "@/hooks/use-api";
+import { receiptUpdate } from "@/lib/receipt-update";
 import type {
   ApiFinancialAccount,
   ApiTransaction,
@@ -226,7 +227,7 @@ export function TransactionForm({
           .split(",")
           .map((tag) => tag.trim())
           .filter(Boolean),
-        receiptStorageId: receiptStorageId ?? undefined,
+        ...receiptUpdate(receiptStorageId, transaction),
       };
 
       if (transaction?.id) {
@@ -295,6 +296,20 @@ export function TransactionForm({
           <ReceiptScanner onScanComplete={handleScanComplete} onCancel={() => setMode("manual")} />
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
+            {receiptStorageId && (
+              <div className="flex items-center justify-between gap-3 rounded-[0.6875rem] border border-border/60 p-3">
+                <p className="text-sm text-muted-foreground">Receipt attached</p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="lg"
+                  disabled={loading}
+                  onClick={() => setReceiptStorageId(null)}
+                >
+                  Remove receipt
+                </Button>
+              </div>
+            )}
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="type">Type</Label>

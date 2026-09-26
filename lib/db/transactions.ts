@@ -14,6 +14,7 @@ import * as givingRecipientsService from "./giving-recipients";
 import * as recurringMoneyOccurrences from "@/lib/recurring-money-occurrences";
 import * as transactionRulesService from "./transaction-rules";
 import { ownerUserId } from "./workspaces";
+import { assertStoredObjectInWorkspace } from "./stored-objects";
 import {
   idSchema,
   limitSchema,
@@ -325,6 +326,7 @@ export async function getById(workspaceId: string, id: string) {
 export async function create(workspaceId: string, input: CreateInput) {
   workspaceIdSchema.parse(workspaceId);
   transactionCreateSchema.parse(input);
+  await assertStoredObjectInWorkspace(workspaceId, input.receiptStorageId);
   const userId = await ownerUserId(workspaceId);
   if (input.status === "reconciled") {
     throw new Error("Transactions can only be reconciled through account reconciliation");
@@ -348,30 +350,33 @@ export async function create(workspaceId: string, input: CreateInput) {
   );
   const id = genId();
   const now = new Date();
-  const [row] = await db
-    .insert(transactions)
-    .values({
-      id,
-      userId,
-      workspaceId,
-      amount: String(input.amount),
-      date: input.date,
-      type: input.type,
-      accountId: input.accountId ?? null,
-      status: input.status ?? "cleared",
-      category: input.category,
-      payee: input.payee?.trim() || null,
-      clientId: input.clientId ?? null,
-      givingRecipientId: input.givingRecipientId ?? null,
-      givingDesignationId: input.givingDesignationId ?? null,
-      notes: input.notes ?? null,
-      tags: input.tags ?? [],
-      receiptStorageId: input.receiptStorageId ?? null,
-      createdAt: now,
-      updatedAt: now,
-    })
-    .returning();
-  return row;
+  return db.transaction(async (tx) => {
+    await assertStoredObjectInWorkspace(workspaceId, input.receiptStorageId, tx);
+    const [row] = await tx
+      .insert(transactions)
+      .values({
+        id,
+        userId,
+        workspaceId,
+        amount: String(input.amount),
+        date: input.date,
+        type: input.type,
+        accountId: input.accountId ?? null,
+        status: input.status ?? "cleared",
+        category: input.category,
+        payee: input.payee?.trim() || null,
+        clientId: input.clientId ?? null,
+        givingRecipientId: input.givingRecipientId ?? null,
+        givingDesignationId: input.givingDesignationId ?? null,
+        notes: input.notes ?? null,
+        tags: input.tags ?? [],
+        receiptStorageId: input.receiptStorageId ?? null,
+        createdAt: now,
+        updatedAt: now,
+      })
+      .returning();
+    return row;
+  });
 }
 
 export async function reviewImport(
@@ -514,6 +519,7 @@ export async function update(workspaceId: string, id: string, input: UpdateInput
   workspaceIdSchema.parse(workspaceId);
   idSchema.parse(id);
   transactionUpdateSchema.parse(input);
+  await assertStoredObjectInWorkspace(workspaceId, input.receiptStorageId);
   const existing = await getById(workspaceId, id);
   if (!existing) throw new Error("Transaction not found or unauthorized");
   const actor = actorUserId
@@ -603,6 +609,7 @@ export async function update(workspaceId: string, id: string, input: UpdateInput
   }
 
   return db.transaction(async (tx) => {
+    await assertStoredObjectInWorkspace(workspaceId, input.receiptStorageId, tx);
     if (input.type !== undefined && input.type !== existing.type) {
       await tx
         .select({ id: transactions.id })

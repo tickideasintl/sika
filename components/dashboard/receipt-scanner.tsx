@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Upload, Loader2, Camera, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { apiFetch } from "@/hooks/use-api";
 import { cn } from "@/lib/utils";
 
 interface ReceiptData {
@@ -14,6 +15,7 @@ interface ReceiptData {
   category: string;
   items?: string[];
   receiptUrl: string;
+  storageId: string;
   fileName: string;
 }
 
@@ -48,18 +50,11 @@ export function ReceiptScanner({ onScanComplete, onCancel }: ReceiptScannerProps
       const formData = new FormData();
       formData.append("file", file);
 
-      // eslint-disable-next-line no-restricted-syntax -- stateless OCR + upload; the route uses only actorUserId and the storage key is a random UUID. The scanned result is saved later through the workspace-scoped transactions API.
-      const response = await fetch("/api/receipts/scan", {
+      const data = await apiFetch<ReceiptData>("/api/receipts/scan", {
         method: "POST",
         body: formData,
       });
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Failed to scan receipt");
-      }
-
-      const data = await response.json();
       toast({ title: "Receipt scanned", description: "Details extracted successfully" });
       onScanComplete(data);
     } catch (error: unknown) {

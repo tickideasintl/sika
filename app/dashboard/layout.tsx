@@ -13,6 +13,16 @@ import { apiFetch } from "@/hooks/use-api";
 import { authClient } from "@/lib/auth-client";
 import { NotificationsProvider } from "@/hooks/use-notifications";
 
+function WorkspaceSeed() {
+  // Mounted inside the resolved, workspace-keyed subtree, never before binding.
+  useEffect(() => {
+    apiFetch("/api/categories/seed", { method: "POST" }).catch((error) => {
+      console.error("Failed to seed default categories", error);
+    });
+  }, []);
+  return null;
+}
+
 export default function DashboardLayout({
   children,
 }: {
@@ -26,26 +36,6 @@ export default function DashboardLayout({
       router.push("/auth/login");
       return;
     }
-
-    if (!session?.user?.id) return;
-
-    // Seeding is per workspace, so this has to carry the active one rather than
-    // defaulting to the user's first. `apiFetch` reads it straight from
-    // localStorage, so it is right even on this first render, before the
-    // WorkspaceProvider below has resolved.
-    const seed = () => {
-      apiFetch("/api/categories/seed", { method: "POST" }).catch((error) => {
-        console.error("Failed to seed default categories", error);
-      });
-    };
-
-    seed();
-
-    // Mounting is not enough: switching into a workspace that has never been
-    // seeded has to fill it too, otherwise it shows an empty category list
-    // until the next full page load.
-    window.addEventListener("workspace-changed", seed);
-    return () => window.removeEventListener("workspace-changed", seed);
   }, [session, isPending, router]);
 
   if (isPending) {
@@ -68,6 +58,7 @@ export default function DashboardLayout({
 
   return (
     <WorkspaceProvider>
+      <WorkspaceSeed />
       <NotificationsProvider>
         <div className="flex min-h-screen bg-background">
           <a

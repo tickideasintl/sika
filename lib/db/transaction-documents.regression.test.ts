@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { eq } from "drizzle-orm";
 import { db } from "@/db/client";
-import { transactions, users, workspaces } from "@/db/schema";
+import { storedObjects, transactions, users, workspaces } from "@/db/schema";
 import * as documentsService from "./transaction-documents";
 import * as transactionsService from "./transactions";
 
@@ -25,6 +25,16 @@ describe(
       ]);
 
       try {
+        // Simulate server-side upload provenance; references alone are no longer enough.
+        await db.insert(storedObjects).values([
+          "receipts/legacy.jpg",
+          "supporting-documents/expense.pdf",
+          "supporting-documents/other.pdf",
+          "supporting-documents/concurrent-a.pdf",
+          "supporting-documents/concurrent-b.pdf",
+          "supporting-documents/type-race.pdf",
+          ...Array.from({ length: 9 }, (_, index) => `supporting-documents/${index}.pdf`),
+        ].map((storageKey) => ({ storageKey, workspaceId })));
         const gift = await transactionsService.create(workspaceId, {
           amount: 100,
           date: "2026-08-01",
@@ -170,6 +180,10 @@ describe(
       ]);
 
       try {
+        await db.insert(storedObjects).values([
+          { storageKey: "supporting-documents/evidence.pdf", workspaceId },
+          { storageKey: "receipts/legacy.pdf", workspaceId },
+        ]);
         const olderMissing = await transactionsService.create(workspaceId, {
           amount: 25,
           date: "2026-03-01",
