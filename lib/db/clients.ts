@@ -20,6 +20,7 @@ import {
   idSchema,
   workspaceIdSchema,
 } from "./validation";
+import type { LedgerReader } from "./ledger-lock";
 import { ownerUserId } from "./workspaces";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -324,10 +325,11 @@ export async function remove(workspaceId: string, id: string) {
 export async function assertInWorkspace(
   workspaceId: string,
   clientId: string,
+  executor: LedgerReader = db,
 ): Promise<void> {
   workspaceIdSchema.parse(workspaceId);
   idSchema.parse(clientId);
-  const [row] = await db
+  const [row] = await executor
     .select({ id: clients.id })
     .from(clients)
     .where(

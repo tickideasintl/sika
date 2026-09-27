@@ -7,6 +7,7 @@ import {
   workspaces,
 } from "@/db/schema";
 import { calculateAccountBalance } from "@/lib/account-balance";
+import { lockWorkspaceLedger, type LedgerReader } from "./ledger-lock";
 import { ownerUserId } from "./workspaces";
 import {
   accountReconciliationSchema,
@@ -55,8 +56,9 @@ function genId() {
 export async function assertInWorkspace(
   workspaceId: string,
   accountId: string,
+  executor: LedgerReader = db,
 ) {
-  const [account] = await db
+  const [account] = await executor
     .select()
     .from(financialAccounts)
     .where(
@@ -86,6 +88,7 @@ async function movementDelta(
   account: typeof financialAccounts.$inferSelect,
   endDate?: string,
   includePending = false,
+  executor: LedgerReader = db,
 ) {
   const transactionConditions = [
     eq(transactions.accountId, account.id),
@@ -94,7 +97,7 @@ async function movementDelta(
   if (endDate) transactionConditions.push(lte(transactions.date, endDate));
   if (!includePending) transactionConditions.push(ne(transactions.status, "pending"));
 
-  const [transactionResult] = await db
+  const [transactionResult] = await executor
     .select({
       delta: sql<string>`coalesce(sum(
         case when ${transactions.type} = 'income'
@@ -115,7 +118,7 @@ async function movementDelta(
   ];
   if (endDate) transferConditions.push(lte(accountTransfers.date, endDate));
 
-  const [transferResult] = await db
+  const [transferResult] = await executor
     .select({
       delta: sql<string>`coalesce(sum(
         case when ${accountTransfers.toAccountId} = ${account.id}
@@ -134,11 +137,12 @@ export async function balanceAt(
   account: typeof financialAccounts.$inferSelect,
   endDate?: string,
   includePending = false,
+  executor: LedgerReader = db,
 ) {
   return calculateAccountBalance(
     Number(account.openingBalance),
     account.accountClass,
-    await movementDelta(account, endDate, includePending),
+    await movementDelta(account, endDate, includePending, executor),
   );
 }
 
@@ -246,57 +250,63 @@ export async function createTransfer(
 ) {
   const validInput = accountTransferCreateSchema.parse(input);
   const userId = await ownerUserId(workspaceId);
-  const [fromAccount, toAccount] = await Promise.all([
-    assertInWorkspace(workspaceId, validInput.fromAccountId),
-    assertInWorkspace(workspaceId, validInput.toAccountId),
-  ]);
-  assertDateIsOpen(fromAccount, validInput.date);
-  assertDateIsOpen(toAccount, validInput.date);
+  return db.transaction(async (tx) => {
+    await lockWorkspaceLedger(tx, workspaceId);
+    const [fromAccount, toAccount] = await Promise.all([
+      assertInWorkspace(workspaceId, validInput.fromAccountId, tx),
+      assertInWorkspace(workspaceId, validInput.toAccountId, tx),
+    ]);
+    assertDateIsOpen(fromAccount, validInput.date);
+    assertDateIsOpen(toAccount, validInput.date);
 
-  const now = new Date();
-  const [row] = await db
-    .insert(accountTransfers)
-    .values({
-      id: genId(),
-      userId,
-      workspaceId,
-      fromAccountId: validInput.fromAccountId,
-      toAccountId: validInput.toAccountId,
-      amount: String(validInput.amount),
-      date: validInput.date,
-      notes: validInput.notes ?? null,
-      createdAt: now,
-      updatedAt: now,
-    })
-    .returning();
-  return row;
+    const now = new Date();
+    const [row] = await tx
+      .insert(accountTransfers)
+      .values({
+        id: genId(),
+        userId,
+        workspaceId,
+        fromAccountId: validInput.fromAccountId,
+        toAccountId: validInput.toAccountId,
+        amount: String(validInput.amount),
+        date: validInput.date,
+        notes: validInput.notes ?? null,
+        createdAt: now,
+        updatedAt: now,
+      })
+      .returning();
+    return row;
+  });
 }
 
 export async function removeTransfer(workspaceId: string, id: string) {
   workspaceIdSchema.parse(workspaceId);
   idSchema.parse(id);
-  const [transfer] = await db
-    .select()
-    .from(accountTransfers)
-    .where(
-      and(
-        eq(accountTransfers.id, id),
-        eq(accountTransfers.workspaceId, workspaceId),
-      ),
-    )
-    .limit(1);
-  if (!transfer) throw new Error("Transfer not found or unauthorized");
+  return db.transaction(async (tx) => {
+    await lockWorkspaceLedger(tx, workspaceId);
+    const [transfer] = await tx
+      .select()
+      .from(accountTransfers)
+      .where(
+        and(
+          eq(accountTransfers.id, id),
+          eq(accountTransfers.workspaceId, workspaceId),
+        ),
+      )
+      .limit(1);
+    if (!transfer) throw new Error("Transfer not found or unauthorized");
 
-  const [fromAccount, toAccount] = await Promise.all([
-    assertInWorkspace(workspaceId, transfer.fromAccountId),
-    assertInWorkspace(workspaceId, transfer.toAccountId),
-  ]);
-  assertDateIsOpen(fromAccount, transfer.date);
-  assertDateIsOpen(toAccount, transfer.date);
+    const [fromAccount, toAccount] = await Promise.all([
+      assertInWorkspace(workspaceId, transfer.fromAccountId, tx),
+      assertInWorkspace(workspaceId, transfer.toAccountId, tx),
+    ]);
+    assertDateIsOpen(fromAccount, transfer.date);
+    assertDateIsOpen(toAccount, transfer.date);
 
-  await db
-    .delete(accountTransfers)
-    .where(and(eq(accountTransfers.id, id), eq(accountTransfers.workspaceId, workspaceId)));
+    await tx
+      .delete(accountTransfers)
+      .where(and(eq(accountTransfers.id, id), eq(accountTransfers.workspaceId, workspaceId)));
+  });
 }
 
 export async function reconcile(
@@ -305,21 +315,22 @@ export async function reconcile(
   input: { statementDate: string; statementBalance: number },
 ) {
   const validInput = accountReconciliationSchema.parse(input);
-  const account = await assertInWorkspace(workspaceId, id);
-  if (validInput.statementDate < account.openingDate) {
-    throw new Error("Statement date cannot be before the account opening date");
-  }
-  if (account.reconciledAt && validInput.statementDate <= account.reconciledAt) {
-    throw new Error(`Statement date must be after ${account.reconciledAt}`);
-  }
+  return db.transaction(async (tx) => {
+    await lockWorkspaceLedger(tx, workspaceId);
+    const account = await assertInWorkspace(workspaceId, id, tx);
+    if (validInput.statementDate < account.openingDate) {
+      throw new Error("Statement date cannot be before the account opening date");
+    }
+    if (account.reconciledAt && validInput.statementDate <= account.reconciledAt) {
+      throw new Error(`Statement date must be after ${account.reconciledAt}`);
+    }
 
-  const calculatedBalance = await balanceAt(account, validInput.statementDate);
-  const difference = Number((validInput.statementBalance - calculatedBalance).toFixed(2));
-  if (difference !== 0) {
-    return { reconciled: false as const, calculatedBalance, difference };
-  }
+    const calculatedBalance = await balanceAt(account, validInput.statementDate, false, tx);
+    const difference = Number((validInput.statementBalance - calculatedBalance).toFixed(2));
+    if (difference !== 0) {
+      return { reconciled: false as const, calculatedBalance, difference };
+    }
 
-  await db.transaction(async (tx) => {
     await tx
       .update(transactions)
       .set({ status: "reconciled", updatedAt: new Date() })
@@ -338,7 +349,7 @@ export async function reconcile(
         updatedAt: new Date(),
       })
       .where(and(eq(financialAccounts.id, id), eq(financialAccounts.workspaceId, workspaceId)));
-  });
 
-  return { reconciled: true as const, calculatedBalance, difference: 0 };
+    return { reconciled: true as const, calculatedBalance, difference: 0 };
+  });
 }

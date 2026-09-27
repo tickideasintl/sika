@@ -13,6 +13,7 @@ import * as financialAccountsService from "./financial-accounts";
 import * as givingRecipientsService from "./giving-recipients";
 import * as recurringMoneyOccurrences from "@/lib/recurring-money-occurrences";
 import * as transactionRulesService from "./transaction-rules";
+import { lockWorkspaceLedger, type LedgerReader } from "./ledger-lock";
 import { ownerUserId } from "./workspaces";
 import { assertStoredObjectInWorkspace } from "./stored-objects";
 import {
@@ -40,6 +41,7 @@ async function assertGivingAttribution(
   clientId?: string | null,
   recipientId?: string | null,
   designationId?: string | null,
+  executor: LedgerReader = db,
 ) {
   if (clientId && type === "giving") {
     throw new GivingAttributionError("Clients cannot be assigned to giving transactions");
@@ -50,12 +52,13 @@ async function assertGivingAttribution(
       "Giving attribution can only be assigned to giving transactions",
     );
   }
-  await givingRecipientsService.assertRecipientInWorkspace(workspaceId, recipientId);
+  await givingRecipientsService.assertRecipientInWorkspace(workspaceId, recipientId, executor);
   if (designationId) {
     await givingRecipientsService.assertDesignationInWorkspace(
       workspaceId,
       designationId,
       recipientId,
+      executor,
     );
   }
 }
@@ -331,13 +334,6 @@ export async function create(workspaceId: string, input: CreateInput) {
   if (input.status === "reconciled") {
     throw new Error("Transactions can only be reconciled through account reconciliation");
   }
-  if (input.accountId) {
-    const account = await financialAccountsService.assertInWorkspace(
-      workspaceId,
-      input.accountId,
-    );
-    financialAccountsService.assertDateIsOpen(account, input.date);
-  }
   if (input.clientId) {
     await clientsService.assertInWorkspace(workspaceId, input.clientId);
   }
@@ -351,6 +347,15 @@ export async function create(workspaceId: string, input: CreateInput) {
   const id = genId();
   const now = new Date();
   return db.transaction(async (tx) => {
+    await lockWorkspaceLedger(tx, workspaceId);
+    if (input.accountId) {
+      const account = await financialAccountsService.assertInWorkspace(
+        workspaceId,
+        input.accountId,
+        tx,
+      );
+      financialAccountsService.assertDateIsOpen(account, input.date);
+    }
     await assertStoredObjectInWorkspace(workspaceId, input.receiptStorageId, tx);
     const [row] = await tx
       .insert(transactions)
@@ -520,117 +525,110 @@ export async function update(workspaceId: string, id: string, input: UpdateInput
   idSchema.parse(id);
   transactionUpdateSchema.parse(input);
   await assertStoredObjectInWorkspace(workspaceId, input.receiptStorageId);
-  const existing = await getById(workspaceId, id);
-  if (!existing) throw new Error("Transaction not found or unauthorized");
   const actor = actorUserId
     ? await reviewParticipant(workspaceId, actorUserId)
     : null;
   const assignee = input.assignedToUserId
     ? await reviewParticipant(workspaceId, input.assignedToUserId)
     : null;
+  return db.transaction(async (tx) => {
+    await lockWorkspaceLedger(tx, workspaceId);
+    await assertStoredObjectInWorkspace(workspaceId, input.receiptStorageId, tx);
+    const [existing] = await tx.select().from(transactions)
+      .where(and(eq(transactions.id, id), eq(transactions.workspaceId, workspaceId)))
+      .limit(1).for("update");
+    if (!existing) throw new Error("Transaction not found or unauthorized");
 
-  if (
-    existing.status === "reconciled" &&
-    (input.amount !== undefined ||
+    if (
+      existing.status === "reconciled" &&
+      (input.amount !== undefined ||
+        input.date !== undefined ||
+        input.type !== undefined ||
+        input.accountId !== undefined ||
+        input.status !== undefined)
+    ) {
+      throw new Error("Reconciled transaction ledger fields cannot be changed");
+    }
+
+    const changesLedger =
+      input.amount !== undefined ||
       input.date !== undefined ||
       input.type !== undefined ||
       input.accountId !== undefined ||
-      (input.status !== undefined && input.status !== "reconciled"))
-  ) {
-    throw new Error("Reconciled transaction ledger fields cannot be changed");
-  }
-
-  const changesLedger =
-    input.amount !== undefined ||
-    input.date !== undefined ||
-    input.type !== undefined ||
-    input.accountId !== undefined ||
-    input.status !== undefined;
-  if (changesLedger && existing.workspaceId) {
-    const effectiveDate = input.date ?? existing.date;
-    const affectedAccountIds = new Set(
-      [existing.accountId, input.accountId === undefined ? existing.accountId : input.accountId].filter(
-        (accountId): accountId is string => Boolean(accountId),
-      ),
-    );
-    for (const accountId of affectedAccountIds) {
-      const account = await financialAccountsService.assertInWorkspace(
-        existing.workspaceId,
-        accountId,
+      input.status !== undefined;
+    if (changesLedger && existing.workspaceId) {
+      const effectiveDate = input.date ?? existing.date;
+      const affectedAccountIds = new Set(
+        [existing.accountId, input.accountId === undefined ? existing.accountId : input.accountId].filter(
+          (accountId): accountId is string => Boolean(accountId),
+        ),
       );
-      financialAccountsService.assertDateIsOpen(
-        account,
-        accountId === existing.accountId ? existing.date : effectiveDate,
-      );
-      if (accountId === existing.accountId && effectiveDate !== existing.date) {
-        financialAccountsService.assertDateIsOpen(account, effectiveDate);
+      for (const accountId of affectedAccountIds) {
+        const account = await financialAccountsService.assertInWorkspace(
+          existing.workspaceId,
+          accountId,
+          tx,
+        );
+        financialAccountsService.assertDateIsOpen(
+          account,
+          accountId === existing.accountId ? existing.date : effectiveDate,
+        );
+        if (accountId === existing.accountId && effectiveDate !== existing.date) {
+          financialAccountsService.assertDateIsOpen(account, effectiveDate);
+        }
       }
+    } else if (input.accountId && !existing.workspaceId) {
+      throw new Error("This transaction has no workspace, so it cannot be assigned to an account");
     }
-  } else if (input.accountId && !existing.workspaceId) {
-    throw new Error("This transaction has no workspace, so it cannot be assigned to an account");
-  }
 
-  if (input.clientId && input.clientId !== existing.clientId) {
-    // Checked against the row's own workspace, so a client from another
-    // workspace cannot be attached to this money.
+    if (input.clientId && input.clientId !== existing.clientId) {
+      // Checked against the row's own workspace, so a client from another
+      // workspace cannot be attached to this money.
+      if (!existing.workspaceId) {
+        throw new Error("This transaction has no workspace, so it cannot be attributed");
+      }
+      await clientsService.assertInWorkspace(existing.workspaceId, input.clientId, tx);
+    }
+
+    const effectiveType = input.type ?? existing.type;
+    const effectiveClientId = input.clientId === undefined ? existing.clientId : input.clientId;
+    const effectiveRecipientId =
+      input.givingRecipientId === undefined
+        ? existing.givingRecipientId
+        : input.givingRecipientId;
+    const effectiveDesignationId =
+      input.givingDesignationId === undefined
+        ? existing.givingDesignationId
+        : input.givingDesignationId;
     if (!existing.workspaceId) {
-      throw new Error("This transaction has no workspace, so it cannot be attributed");
+      if (effectiveRecipientId || effectiveDesignationId) {
+        throw new GivingAttributionError("This transaction has no workspace, so it cannot be attributed");
+      }
+    } else if (
+      input.type !== undefined ||
+      input.clientId !== undefined ||
+      input.givingRecipientId !== undefined ||
+      input.givingDesignationId !== undefined
+    ) {
+      await assertGivingAttribution(
+        existing.workspaceId,
+        effectiveType,
+        effectiveClientId,
+        effectiveRecipientId,
+        effectiveDesignationId,
+        tx,
+      );
     }
-    await clientsService.assertInWorkspace(existing.workspaceId, input.clientId);
-  }
 
-  const effectiveType = input.type ?? existing.type;
-  const effectiveClientId = input.clientId === undefined ? existing.clientId : input.clientId;
-  const effectiveRecipientId =
-    input.givingRecipientId === undefined
-      ? existing.givingRecipientId
-      : input.givingRecipientId;
-  const effectiveDesignationId =
-    input.givingDesignationId === undefined
-      ? existing.givingDesignationId
-      : input.givingDesignationId;
-  if (!existing.workspaceId) {
-    if (effectiveRecipientId || effectiveDesignationId) {
-      throw new GivingAttributionError("This transaction has no workspace, so it cannot be attributed");
-    }
-  } else if (
-    input.type !== undefined ||
-    input.clientId !== undefined ||
-    input.givingRecipientId !== undefined ||
-    input.givingDesignationId !== undefined
-  ) {
-    await assertGivingAttribution(
-      existing.workspaceId,
-      effectiveType,
-      effectiveClientId,
-      effectiveRecipientId,
-      effectiveDesignationId,
-    );
-  }
-
-  return db.transaction(async (tx) => {
-    await assertStoredObjectInWorkspace(workspaceId, input.receiptStorageId, tx);
     if (input.type !== undefined && input.type !== existing.type) {
-      await tx
-        .select({ id: transactions.id })
-        .from(transactions)
-        .where(and(eq(transactions.id, id), eq(transactions.workspaceId, workspaceId)))
-        .limit(1)
-        .for("update");
       await recurringMoneyOccurrences.assertChange(workspaceId, {
         kind: "transaction-type",
         transactionId: id,
         nextType: input.type,
-      });
+      }, tx);
     }
 
     if (existing.type === "giving" && effectiveType !== "giving") {
-      await tx
-        .select({ id: transactions.id })
-        .from(transactions)
-        .where(and(eq(transactions.id, id), eq(transactions.workspaceId, workspaceId)))
-        .limit(1)
-        .for("update");
       const [document] = await tx
         .select({ id: transactionDocuments.id })
         .from(transactionDocuments)
@@ -726,15 +724,22 @@ export async function listReviewHistory(workspaceId: string, transactionId: stri
 export async function remove(workspaceId: string, id: string) {
   workspaceIdSchema.parse(workspaceId);
   idSchema.parse(id);
-  const existing = await getById(workspaceId, id);
-  if (!existing) throw new Error("Transaction not found or unauthorized");
-  if (existing.status === "reconciled") {
-    throw new Error("Reconciled transactions cannot be deleted");
-  }
-
-  await db
-    .delete(transactions)
-    .where(and(eq(transactions.id, id), eq(transactions.workspaceId, workspaceId)));
+  return db.transaction(async (tx) => {
+    await lockWorkspaceLedger(tx, workspaceId);
+    const [existing] = await tx.select().from(transactions)
+      .where(and(eq(transactions.id, id), eq(transactions.workspaceId, workspaceId)))
+      .limit(1).for("update");
+    if (!existing) throw new Error("Transaction not found or unauthorized");
+    if (existing.status === "reconciled") {
+      throw new Error("Reconciled transactions cannot be deleted");
+    }
+    if (existing.accountId) {
+      const account = await financialAccountsService.assertInWorkspace(workspaceId, existing.accountId, tx);
+      financialAccountsService.assertDateIsOpen(account, existing.date);
+    }
+    await tx.delete(transactions)
+      .where(and(eq(transactions.id, id), eq(transactions.workspaceId, workspaceId)));
+  });
 }
 
 /**
