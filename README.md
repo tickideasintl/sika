@@ -51,7 +51,10 @@ Everything else is optional. **Receipt scanning and file storage are off unless
 you configure them**, so Sika runs fully offline with no third-party API keys.
 Set `OPENAI_API_KEY` to enable receipt scanning, and the `S3_*` variables to store
 receipt images. The AI provider is configurable per user in Settings and works
-with any OpenAI-compatible endpoint, including a local Ollama instance.
+with any OpenAI-compatible HTTPS endpoint. `OPENAI_API_KEY` is only used for
+OpenAI itself; other providers need the user's own key. To use a local Ollama
+instance, set `SIKA_ALLOW_PRIVATE_AI_ENDPOINTS=true`, which lets any signed-in
+user point the server at internal hosts, so only enable it on trusted installs.
 
 Notification delivery is also optional and self-hosted. Browser Push uses a VAPID
 key pair generated with `npx web-push generate-vapid-keys --json`; email uses

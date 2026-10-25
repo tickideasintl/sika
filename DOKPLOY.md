@@ -115,7 +115,8 @@ Use the exact command/order runbook here:
 | `BACKUP_REPORT_TOKEN` | No | Bearer token for a validated backup job to report success |
 | `SMTP_URL` | No | SMTP connection URL; URL-encode credentials |
 | `SMTP_FROM` | No | Sender mailbox, e.g. `Sika <sika@example.com>` |
-| `OPENAI_API_KEY` | No | For AI-powered receipt scanning |
+| `OPENAI_API_KEY` | No | For AI-powered receipt scanning; only sent to `https://api.openai.com` |
+| `SIKA_ALLOW_PRIVATE_AI_ENDPOINTS` | No | `true` allows http:// and private-network AI endpoints (e.g. local Ollama); trusted installs only |
 | `S3_ENDPOINT` | No | S3/MinIO endpoint URL |
 | `S3_BUCKET` | No | Storage bucket name |
 | `S3_REGION` | No | Bucket region |
