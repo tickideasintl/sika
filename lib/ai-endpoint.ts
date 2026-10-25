@@ -37,8 +37,7 @@ for (const [network, prefix] of [
   nonPublicRanges.addSubnet(network, prefix, "ipv4");
 }
 for (const [network, prefix] of [
-  ["::", 128],
-  ["::1", 128],
+  ["::", 96],
   ["64:ff9b::", 96],
   ["64:ff9b:1::", 48],
   ["100::", 64],
@@ -172,7 +171,6 @@ export function postToAiEndpoint(
           "Accept-Encoding": "identity",
         },
         lookup: createGuardedLookup(allowPrivate),
-        timeout: timeoutMs,
       },
       (response) => {
         const chunks: Buffer[] = [];
@@ -197,9 +195,12 @@ export function postToAiEndpoint(
         response.on("error", reject);
       },
     );
-    request.on("timeout", () => {
-      request.destroy(new AiEndpointError("AI provider request timed out"));
-    });
+    const deadline = setTimeout(() => {
+      const error = new AiEndpointError("AI provider request timed out");
+      reject(error);
+      request.destroy(error);
+    }, timeoutMs);
+    request.on("close", () => clearTimeout(deadline));
     request.on("error", (error) => {
       const cause = (error as { cause?: unknown }).cause;
       reject(cause instanceof AiEndpointError ? cause : error);

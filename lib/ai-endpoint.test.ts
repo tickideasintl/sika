@@ -23,6 +23,8 @@ describe("AI endpoint policy", () => {
       "0.0.0.0",
       "::1",
       "::",
+      "::7f00:1",
+      "::a00:1",
       "fd00::1",
       "fe80::1",
       "::ffff:127.0.0.1",
@@ -102,6 +104,30 @@ describe("AI endpoint policy", () => {
         /too large/,
       );
     } finally {
+      await new Promise<void>((resolve) => server.close(() => resolve()));
+    }
+  });
+
+  it("enforces an overall deadline even while bytes keep arriving", async () => {
+    const server = http.createServer((_request, response) => {
+      response.writeHead(200);
+      const timer = setInterval(() => response.write(" "), 20);
+      response.on("close", () => clearInterval(timer));
+    });
+    await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
+    const { port } = server.address() as AddressInfo;
+    try {
+      const started = Date.now();
+      await assert.rejects(
+        postToAiEndpoint(`http://127.0.0.1:${port}/v1`, {}, "{}", {
+          allowPrivate: true,
+          timeoutMs: 200,
+        }),
+        /timed out/,
+      );
+      assert.ok(Date.now() - started < 2000);
+    } finally {
+      server.closeAllConnections();
       await new Promise<void>((resolve) => server.close(() => resolve()));
     }
   });

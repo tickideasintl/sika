@@ -100,12 +100,17 @@ function genId() {
   return crypto.randomUUID();
 }
 
-async function upgradeLegacyApiKey(id: string, userId: string, apiKey: string) {
+async function upgradeLegacyApiKey(
+  id: string,
+  userId: string,
+  legacyValue: string,
+  apiKey: string,
+) {
   try {
     await db
       .update(aiProviderSettings)
       .set({ apiKey: encryptApiKey(apiKey, userId) })
-      .where(eq(aiProviderSettings.id, id));
+      .where(and(eq(aiProviderSettings.id, id), eq(aiProviderSettings.apiKey, legacyValue)));
   } catch (error) {
     console.error("Failed to re-encrypt legacy AI provider key:", error);
   }
@@ -124,8 +129,9 @@ export async function getOrCreateSettings(
 
   if (existing[0]) {
     const apiKey = decryptApiKey(existing[0].apiKey, userId);
-    if (apiKey && !isCurrentApiKeyEncryption(existing[0].apiKey)) {
-      await upgradeLegacyApiKey(existing[0].id, userId, apiKey);
+    const storedKey = existing[0].apiKey;
+    if (apiKey && storedKey && !isCurrentApiKeyEncryption(storedKey)) {
+      await upgradeLegacyApiKey(existing[0].id, userId, storedKey, apiKey);
     }
     return { ...existing[0], apiKey } as AIProviderSettings;
   }
