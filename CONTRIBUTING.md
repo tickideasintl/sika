@@ -5,7 +5,7 @@ manager, and contributions of any size are welcome.
 
 ## Getting set up
 
-You need Node.js (see `.nvmrc`, currently 24.19.0) and PostgreSQL 16+.
+You need Node.js (see `.nvmrc`, currently 24.22.1) and PostgreSQL 16+.
 
 ```bash
 git clone https://github.com/tickideasintl/sika.git
