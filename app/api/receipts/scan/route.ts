@@ -2,6 +2,7 @@ import { requireAuthWithWorkspace } from "@/lib/auth-server";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { uploadReceipt } from "@/lib/storage";
 import { getActiveSettings } from "@/lib/db/ai-provider-settings";
+import { AiEndpointError, postToAiEndpoint } from "@/lib/ai-endpoint";
 import { NextRequest, NextResponse } from "next/server";
 
 // ---------------------------------------------------------------------------
@@ -92,9 +93,9 @@ async function extractReceiptData(
     );
   }
 
-  const response = await fetch(`${endpoint}/chat/completions`, {
-    method: "POST",
-    headers: {
+  const response = await postToAiEndpoint(
+    `${endpoint.replace(/\/+$/, "")}/chat/completions`,
+    {
       "Content-Type": "application/json",
       Authorization: `Bearer ${apiKey}`,
       // OpenRouter-specific headers
@@ -103,7 +104,7 @@ async function extractReceiptData(
         "X-Title": "Sika",
       }),
     },
-    body: JSON.stringify({
+    JSON.stringify({
       model,
       messages: [
         {
@@ -133,15 +134,19 @@ Only return valid JSON, no additional text.`,
       ],
       max_tokens: 500,
     }),
-  });
+  );
 
-  if (!response.ok) {
-    const errorText = await response.text().catch(() => "Unknown error");
-    console.error("AI API error:", response.status, errorText);
+  if (response.status < 200 || response.status >= 300) {
+    console.error("AI API error:", response.status, response.body.slice(0, 2000));
     throw new Error(`Failed to call AI API: ${response.statusText}`);
   }
 
-  const data = await response.json();
+  let data: { choices?: { message?: { content?: string } }[] };
+  try {
+    data = JSON.parse(response.body);
+  } catch {
+    throw new Error("Failed to extract receipt data");
+  }
   const content: string | undefined = data.choices?.[0]?.message?.content;
 
   if (!content) {
@@ -250,6 +255,13 @@ export async function POST(request: NextRequest) {
       );
     }
     
+    if (error instanceof AiEndpointError) {
+      return NextResponse.json(
+        { error: errorMessage, code: "AI_ENDPOINT_BLOCKED" },
+        { status: 400 },
+      );
+    }
+
     if (errorMessage.includes("API key not configured")) {
       return NextResponse.json(
         { error: errorMessage, code: "API_KEY_MISSING" },

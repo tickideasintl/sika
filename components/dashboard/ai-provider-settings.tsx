@@ -102,9 +102,9 @@ export function AIProviderSettings() {
         body: JSON.stringify(body),
       });
 
-      if (!response.ok) throw new Error("Failed to save settings");
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.error || "Failed to save settings");
 
-      const data = await response.json();
       setSettings(data.settings);
       setHasModifiedKey(false);
       setApiKeyInput("");
@@ -116,7 +116,7 @@ export function AIProviderSettings() {
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to save settings",
+        description: error instanceof Error ? error.message : "Failed to save settings",
         variant: "destructive",
       });
     } finally {

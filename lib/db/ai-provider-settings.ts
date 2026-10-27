@@ -6,7 +6,13 @@ import {
   aiProviderSettingsSchema,
   aiProviderSettingsUpdateSchema,
 } from "./validation";
-import type { z } from "zod";
+import { z } from "zod";
+import { getAiEndpointError, mayUseOperatorKey } from "@/lib/ai-endpoint";
+import {
+  decryptApiKey,
+  encryptApiKey,
+  isCurrentApiKeyEncryption,
+} from "@/lib/ai-key-encryption";
 
 export type AIProvider =
   | "openai"
@@ -84,28 +90,29 @@ export const PROVIDER_DEFAULTS: Record<AIProvider, { endpoint: string; models: s
   },
 };
 
+// Kept out of ./validation: that module is bundled for the browser and this check needs node:net.
+const allowedEndpointSchema = z.string().superRefine((value, ctx) => {
+  const message = getAiEndpointError(value);
+  if (message) ctx.addIssue({ code: "custom", message, path: ["apiEndpoint"] });
+});
+
 function genId() {
   return crypto.randomUUID();
 }
 
-/**
- * Simple encryption for API keys (base64 + basic obfuscation)
- * In production, consider using a proper encryption service like AWS KMS or similar
- */
-function encryptApiKey(key: string): string {
-  // Simple obfuscation - in production use proper encryption
-  const encoded = Buffer.from(key).toString("base64");
-  return `enc:${encoded}`;
-}
-
-function decryptApiKey(encrypted: string | null): string | null {
-  if (!encrypted) return null;
-  if (!encrypted.startsWith("enc:")) return encrypted; // legacy plain text
-  const encoded = encrypted.slice(4);
+async function upgradeLegacyApiKey(
+  id: string,
+  userId: string,
+  legacyValue: string,
+  apiKey: string,
+) {
   try {
-    return Buffer.from(encoded, "base64").toString("utf-8");
-  } catch {
-    return null;
+    await db
+      .update(aiProviderSettings)
+      .set({ apiKey: encryptApiKey(apiKey, userId) })
+      .where(and(eq(aiProviderSettings.id, id), eq(aiProviderSettings.apiKey, legacyValue)));
+  } catch (error) {
+    console.error("Failed to re-encrypt legacy AI provider key:", error);
   }
 }
 
@@ -121,10 +128,12 @@ export async function getOrCreateSettings(
     .limit(1);
 
   if (existing[0]) {
-    return {
-      ...existing[0],
-      apiKey: decryptApiKey(existing[0].apiKey),
-    } as AIProviderSettings;
+    const apiKey = decryptApiKey(existing[0].apiKey, userId);
+    const storedKey = existing[0].apiKey;
+    if (apiKey && storedKey && !isCurrentApiKeyEncryption(storedKey)) {
+      await upgradeLegacyApiKey(existing[0].id, userId, storedKey, apiKey);
+    }
+    return { ...existing[0], apiKey } as AIProviderSettings;
   }
 
   // Create default settings
@@ -178,15 +187,17 @@ export async function updateSettings(
     updateData.provider = validInput.provider;
     // Auto-update endpoint if switching to a known provider
     if (validInput.provider !== "custom" && !validInput.apiEndpoint) {
-      updateData.apiEndpoint = PROVIDER_DEFAULTS[validInput.provider].endpoint;
+      updateData.apiEndpoint = allowedEndpointSchema.parse(
+        PROVIDER_DEFAULTS[validInput.provider].endpoint,
+      );
     }
   }
   if (validInput.apiEndpoint !== undefined) {
-    updateData.apiEndpoint = validInput.apiEndpoint;
+    updateData.apiEndpoint = allowedEndpointSchema.parse(validInput.apiEndpoint);
   }
   if (validInput.apiKey !== undefined) {
     updateData.apiKey = validInput.apiKey
-      ? encryptApiKey(validInput.apiKey)
+      ? encryptApiKey(validInput.apiKey, userId)
       : null;
   }
   if (validInput.model !== undefined) {
@@ -204,7 +215,7 @@ export async function updateSettings(
 
   return {
     ...row,
-    apiKey: decryptApiKey(row.apiKey),
+    apiKey: decryptApiKey(row.apiKey, userId),
   } as AIProviderSettings;
 }
 
@@ -219,8 +230,10 @@ export async function getActiveSettings(userId: string): Promise<{
     return null;
   }
 
-  // Fall back to environment variable if no API key is set
-  const apiKey = settings.apiKey || process.env.OPENAI_API_KEY || null;
+  const operatorKey = mayUseOperatorKey(settings.apiEndpoint)
+    ? process.env.OPENAI_API_KEY
+    : undefined;
+  const apiKey = settings.apiKey || operatorKey || null;
 
   return {
     endpoint: settings.apiEndpoint,
