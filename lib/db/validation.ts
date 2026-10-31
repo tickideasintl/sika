@@ -354,7 +354,9 @@ export const transactionUpdateSchema = z.object({
   date: dateStringSchema.optional(),
   type: transactionTypeSchema.optional(),
   accountId: idSchema.nullish(),
-  status: transactionStatusSchema.optional(),
+  status: transactionStatusSchema.refine((status) => status !== "reconciled", {
+    message: "Transactions can only be reconciled through account reconciliation",
+  }).optional(),
   needsReview: z.boolean().optional(),
   assignedToUserId: idSchema.nullish(),
   category: z.string().min(1).optional(),

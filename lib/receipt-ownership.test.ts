@@ -85,6 +85,12 @@ describe("receipt workspace ownership (isolated database and S3 mocks)", () => {
     // Defense against an accidentally unmocked code path making a real query.
     mock.method(db.$client, "query", () => { throw new Error("Live database access forbidden"); });
     mock.method(db.$client, "connect", () => { throw new Error("Live database access forbidden"); });
+    mock.method(db, "execute", (async (statement: SQL) => {
+      const query = dialect.sqlToQuery(statement);
+      assert.equal(query.sql, "select pg_advisory_xact_lock(hashtextextended($1, 0))");
+      assert.deepEqual(query.params, [`sika:ledger:${workspaceId}`]);
+      return { rows: [], rowCount: 1 };
+    }) as unknown as typeof db.execute);
     mock.method(db, "select", query as unknown as typeof db.select);
     mock.method(db, "transaction", (async (callback: (tx: typeof db) => unknown) =>
       callback(db)) as unknown as typeof db.transaction);

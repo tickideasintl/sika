@@ -10,6 +10,7 @@ import {
   idSchema,
   workspaceIdSchema,
 } from "./validation";
+import type { LedgerReader } from "./ledger-lock";
 import { ownerUserId } from "./workspaces";
 
 export type RecipientCreateInput = z.input<typeof givingRecipientCreateSchema>;
@@ -116,9 +117,9 @@ export async function updateDesignation(
   return row;
 }
 
-export async function assertRecipientInWorkspace(workspaceId: string, id: string) {
+export async function assertRecipientInWorkspace(workspaceId: string, id: string, executor: LedgerReader = db) {
   idSchema.parse(id);
-  const [row] = await db.select({ id: givingRecipients.id }).from(givingRecipients).where(and(
+  const [row] = await executor.select({ id: givingRecipients.id }).from(givingRecipients).where(and(
     eq(givingRecipients.id, id),
     eq(givingRecipients.workspaceId, workspaceId),
   )).limit(1);
@@ -129,9 +130,10 @@ export async function assertDesignationInWorkspace(
   workspaceId: string,
   designationId: string,
   recipientId: string,
+  executor: LedgerReader = db,
 ) {
   idSchema.parse(designationId);
-  const [row] = await db.select({ id: givingDesignations.id }).from(givingDesignations).where(and(
+  const [row] = await executor.select({ id: givingDesignations.id }).from(givingDesignations).where(and(
     eq(givingDesignations.id, designationId),
     eq(givingDesignations.recipientId, recipientId),
     eq(givingDesignations.workspaceId, workspaceId),
