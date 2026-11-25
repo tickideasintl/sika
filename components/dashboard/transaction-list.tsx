@@ -337,7 +337,7 @@ export function TransactionList({ refreshKey = 0 }: TransactionListProps) {
 
   return (
     <>
-      <div className="flex flex-col gap-2.5 min-[860px]:flex-row min-[860px]:items-center">
+      <div className="flex flex-col gap-2.5 min-[860px]:flex-row min-[860px]:flex-wrap min-[860px]:items-center">
         <div className="relative min-w-[240px] flex-1">
           <Search className="absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -402,7 +402,7 @@ export function TransactionList({ refreshKey = 0 }: TransactionListProps) {
           </SelectContent>
         </Select>
 
-        <div className="grid grid-cols-4 gap-1.5">
+        <div className="flex flex-wrap gap-1.5 min-[860px]:ml-auto min-[860px]:shrink-0">
           {typeFilterOptions.map((option) => (
             <Button
               key={option.value}
@@ -410,7 +410,7 @@ export function TransactionList({ refreshKey = 0 }: TransactionListProps) {
               size="sm"
               variant={typeFilter === option.value ? "default" : "outline"}
               onClick={() => setTypeFilter(option.value)}
-              className="h-[38px]"
+              className="h-[38px] flex-1 px-2 min-[860px]:flex-none min-[860px]:px-3.5"
             >
               {option.label}
             </Button>
