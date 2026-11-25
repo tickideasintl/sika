@@ -13,6 +13,8 @@ import {
   periodMonthSchema,
   workspaceIdSchema,
 } from "@/lib/db/validation";
+import { lockWorkspaceLedger, type LedgerReader } from "@/lib/db/ledger-lock";
+import { assertInWorkspace, assertDateIsOpen } from "@/lib/db/financial-accounts";
 import { ownerUserId } from "@/lib/db/workspaces";
 import { formatUtcDate, getPeriodMonthFromDate } from "@/lib/outgoings-date";
 
@@ -177,7 +179,7 @@ export interface RecurringMoneyOccurrences {
     workspaceId: string,
     request: Extract<ImportRequest, { mode: "commit" }>,
   ): Promise<ImportCommitResult>;
-  assertChange(workspaceId: string, request: RelatedChange): Promise<void>;
+  assertChange(workspaceId: string, request: RelatedChange, executor?: LedgerReader): Promise<void>;
 }
 
 export class RecurringMoneyOccurrenceError extends Error {}
@@ -775,6 +777,7 @@ export function createRecurringMoneyOccurrences(
     if (request.action === "mark-paid") {
       boundedDateSchema.parse(request.paidAt);
       return db.transaction(async (tx) => {
+        await lockWorkspaceLedger(tx, workspaceId);
         const recorded = await materializeOccurrence(
           tx,
           workspaceId,
@@ -829,6 +832,7 @@ export function createRecurringMoneyOccurrences(
     idSchema.parse(request.transactionId);
     if (request.action === "match") {
       return db.transaction(async (tx) => {
+        await lockWorkspaceLedger(tx, workspaceId);
         const recorded = await materializeOccurrence(
           tx,
           workspaceId,
@@ -878,6 +882,7 @@ export function createRecurringMoneyOccurrences(
     }
 
     return db.transaction(async (tx) => {
+      await lockWorkspaceLedger(tx, workspaceId);
       const [recorded] = await tx
         .select({ id: recurringMoneyOccurrences.id })
         .from(recurringMoneyOccurrences)
@@ -907,7 +912,7 @@ export function createRecurringMoneyOccurrences(
       }
       if (settlement.provenance === "lifecycle-created") {
         const [transaction] = await tx
-          .select({ status: transactions.status })
+          .select({ status: transactions.status, accountId: transactions.accountId, date: transactions.date })
           .from(transactions)
           .where(
             and(
@@ -918,6 +923,10 @@ export function createRecurringMoneyOccurrences(
           .limit(1);
         if (transaction?.status === "reconciled") {
           throw new RecurringMoneyConstraintError("Reconciled transactions cannot be deleted");
+        }
+        if (transaction?.accountId) {
+          const account = await assertInWorkspace(workspaceId, transaction.accountId, tx);
+          assertDateIsOpen(account, transaction.date);
         }
         await tx
           .delete(transactions)
@@ -953,6 +962,7 @@ export function createRecurringMoneyOccurrences(
     const reference = occurrenceReference(request.occurrenceId);
     const userId = await ownerUserId(workspaceId);
     return db.transaction(async (tx) => {
+      await lockWorkspaceLedger(tx, workspaceId);
       const recorded = await materializeOccurrence(
         tx,
         workspaceId,
@@ -1033,6 +1043,11 @@ export function createRecurringMoneyOccurrences(
     }
     const userId = await ownerUserId(workspaceId);
     return db.transaction(async (tx) => {
+      await lockWorkspaceLedger(tx, workspaceId);
+      if (request.accountId) {
+        const account = await assertInWorkspace(workspaceId, request.accountId, tx);
+        for (const candidate of request.candidates) assertDateIsOpen(account, candidate.date);
+      }
       const existing = await existingFingerprints(
         tx,
         workspaceId,
@@ -1189,11 +1204,11 @@ export function createRecurringMoneyOccurrences(
     });
   }
 
-  async function assertChange(workspaceId: string, request: RelatedChange) {
+  async function assertChange(workspaceId: string, request: RelatedChange, executor: LedgerReader = db) {
     workspaceIdSchema.parse(workspaceId);
     if (request.kind === "transaction-type") {
       idSchema.parse(request.transactionId);
-      const [settlement] = await db
+      const [settlement] = await executor
         .select({ occurrenceType: recurringMoneyOccurrences.type })
         .from(recurringMoneySettlements)
         .innerJoin(
@@ -1216,7 +1231,7 @@ export function createRecurringMoneyOccurrences(
     }
 
     idSchema.parse(request.recurringMoneyId);
-    const [history] = await db
+    const [history] = await executor
       .select({ id: recurringMoneyOccurrences.id })
       .from(recurringMoneyOccurrences)
       .where(

@@ -21,6 +21,7 @@ import {
   workspaceIdSchema,
 } from "./validation";
 import { ownerUserId } from "./workspaces";
+import type { LedgerReader } from "./ledger-lock";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -78,6 +79,7 @@ async function assertRecurringMoneyShape(
     rebillMode: RebillMode;
     rebillAmount: number | null;
   },
+  executor: LedgerReader = db,
 ) {
   if (input.type !== "expense" && (input.rebillMode !== "none" || input.rebillAmount !== null)) {
     throw new RecurringMoneyShapeError("Only recurring expenses can use client recovery terms");
@@ -94,18 +96,20 @@ async function assertRecurringMoneyShape(
     throw new RecurringMoneyShapeError("A giving fund requires a recipient");
   }
   if (input.clientId) {
-    await clientsService.assertInWorkspace(workspaceId, input.clientId);
+    await clientsService.assertInWorkspace(workspaceId, input.clientId, executor);
   }
   if (input.givingRecipientId) {
     await givingRecipientsService.assertRecipientInWorkspace(
       workspaceId,
       input.givingRecipientId,
+      executor,
     );
     if (input.givingDesignationId) {
       await givingRecipientsService.assertDesignationInWorkspace(
         workspaceId,
         input.givingDesignationId,
         input.givingRecipientId,
+        executor,
       );
     }
   }
@@ -305,7 +309,7 @@ export async function update(
       givingDesignationId,
       rebillMode,
       rebillAmount,
-    });
+    }, tx);
 
     const touchesRebill =
       input.rebillMode !== undefined ||
@@ -366,7 +370,7 @@ export async function remove(
     await assertChange(workspaceId, {
       kind: "schedule-deletion",
       recurringMoneyId: id,
-    });
+    }, tx);
     await tx.delete(recurringOutgoings).where(and(...ownership));
   });
 }
