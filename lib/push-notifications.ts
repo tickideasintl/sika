@@ -1,5 +1,5 @@
 import { createHash, timingSafeEqual } from "node:crypto";
-import webpush from "web-push";
+import { sendNotification, type PushSubscription, type RequestOptions } from "web-push";
 import { and, eq } from "drizzle-orm";
 import { db } from "@/db/client";
 import {
@@ -206,9 +206,9 @@ export async function unsubscribe(userId: string, workspaceId: string, endpoint?
 }
 
 type PushSender = (
-  subscription: webpush.PushSubscription,
+  subscription: PushSubscription,
   payload: string,
-  options: webpush.RequestOptions,
+  options: RequestOptions,
 ) => Promise<unknown>;
 
 export interface DispatchSummary {
@@ -222,7 +222,7 @@ export interface DispatchSummary {
 
 export async function dispatchPushNotifications(options: { today?: string; send?: PushSender } = {}) {
   const config = getDeliveryConfiguration();
-  const send = options.send ?? webpush.sendNotification.bind(webpush);
+  const send = options.send ?? sendNotification;
   const subscriptions = await db
     .select({
       id: pushSubscriptions.id,
