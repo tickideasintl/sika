@@ -14,6 +14,16 @@ export interface MonthlySeriesPoint {
   isCurrent: boolean;
 }
 
+export function buildReportChartAxis(series: MonthlySeriesPoint[]) {
+  const labels = new Map(series.map(({ key, label }) => [key, label]));
+
+  return {
+    dataKey: "key" as const,
+    tickFormatter: (key: unknown) =>
+      typeof key === "string" ? labels.get(key) ?? key : "",
+  };
+}
+
 export function buildMonthlySeries(
   trends: MonthlyTrend[],
   startDate: string,
