@@ -594,13 +594,6 @@ export const periodMonthSchema = z
     { message: "periodMonth is not a valid calendar month" },
   );
 
-export const outgoingPaymentLogCreateSchema = z.object({
-  amount: amountSchema,
-  paidAt: dateStringSchema,
-  periodMonth: periodMonthSchema,
-  notes: z.string().nullish(),
-});
-
 // ─── Debts & Credits ─────────────────────────────────────────────────────────
 
 export const debtTypeSchema = z.enum([
