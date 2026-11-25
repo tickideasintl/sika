@@ -1,7 +1,6 @@
 import { getBoundWorkspace } from "./workspace-runtime";
 
 export const DEFAULT_CURRENCY = "GBP";
-export const ACTIVE_WORKSPACE_CURRENCY_KEY = "activeWorkspaceCurrency";
 
 export const SUPPORTED_CURRENCIES = [
   { code: "GBP", label: "British Pound" },
@@ -19,13 +18,4 @@ export const SUPPORTED_CURRENCIES = [
 export function getStoredWorkspaceCurrency() {
   // Kept for existing formatters: currency follows this tab, not shared storage.
   return getBoundWorkspace()?.currency ?? null;
-}
-
-export function setStoredWorkspaceCurrency(currency: string) {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(ACTIVE_WORKSPACE_CURRENCY_KEY, currency);
-}
-
-export function resolvePreferredCurrency(currency?: string | null) {
-  return currency && /^[A-Z]{3}$/.test(currency) ? currency : DEFAULT_CURRENCY;
 }
