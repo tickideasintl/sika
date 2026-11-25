@@ -8,6 +8,7 @@ import {
   ResponsiveContainer,
   BarChart,
   Bar,
+  type XAxisTickContentProps,
 } from "recharts";
 import { Download, Calendar, TrendingDown, TrendingUp, Wallet, PiggyBank, Sparkles, Target, Receipt, AlertCircle, CheckCircle2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,7 +17,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { formatCurrency } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { TRANSACTION_CHANGED_EVENT } from "@/lib/client-events";
-import { buildMonthlySeries } from "@/lib/report-series";
+import { buildMonthlySeries, buildReportChartAxis, type MonthlySeriesPoint } from "@/lib/report-series";
 
 type Period = "weekly" | "monthly" | "quarterly" | "yearly" | "custom";
 type ComparisonMode = "previous-period" | "previous-year";
@@ -153,18 +154,25 @@ function LoadingState() {
 }
 
 /** The month you are in reads brighter — the spec's one emphasis on this axis. */
-function MonthTick({ x, y, payload, series }: any) {
+function MonthTick({
+  x,
+  y,
+  index,
+  payload,
+  tickFormatter,
+  series,
+}: XAxisTickContentProps & { series: MonthlySeriesPoint[] }) {
   const point = series[payload.index];
   return (
     <text
       x={x}
-      y={y + 12}
+      y={Number(y) + 12}
       textAnchor="middle"
       fontSize={11}
       fontWeight={point?.isCurrent ? 600 : 400}
       fill={point?.isCurrent ? "var(--color-foreground)" : "var(--color-muted-foreground)"}
     >
-      {payload.value}
+      {tickFormatter?.(payload.value, index)}
     </text>
   );
 }
@@ -368,6 +376,8 @@ export function AnalyticsCharts() {
     }));
   }, [analytics, monthSeries, period]);
 
+  const chartAxis = useMemo(() => buildReportChartAxis(chartSeries), [chartSeries]);
+
   const exportCsv = () => {
     if (!analytics) return;
 
@@ -517,11 +527,11 @@ export function AnalyticsCharts() {
             <ResponsiveContainer width="100%" height={230}>
               <BarChart data={chartSeries} barGap={3} margin={{ top: 4, right: 4, left: 4, bottom: 0 }}>
                 <XAxis
-                  dataKey="label"
+                  {...chartAxis}
                   tickLine={false}
                   axisLine={false}
                   interval="preserveStartEnd"
-                  tick={<MonthTick series={chartSeries} />}
+                  tick={(props) => <MonthTick {...props} series={chartSeries} />}
                 />
                 <YAxis hide />
                 <Tooltip
@@ -533,6 +543,7 @@ export function AnalyticsCharts() {
                     fontSize: 12,
                   }}
                   formatter={(value) => formatCurrency(Number(value ?? 0))}
+                  labelFormatter={chartAxis.tickFormatter}
                 />
                 <Bar dataKey="income" name="Income" fill="var(--color-income)" radius={[4, 4, 0, 0]} maxBarSize={11} />
                 <Bar dataKey="expenses" name="Expenses" fill="var(--color-expense)" radius={[4, 4, 0, 0]} maxBarSize={11} />
